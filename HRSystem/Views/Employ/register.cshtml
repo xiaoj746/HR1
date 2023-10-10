@@ -1,0 +1,563 @@
+﻿@{
+    Layout = null;
+}
+@using Model
+@model Engage_resume
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet"
+          href="../../../css/table.css" type="text/css">
+    <link rel="stylesheet"
+          href="../../../css/cwcalendar.css"
+          type="text/css">
+    <script type="text/javascript"
+            src="../../../javascript/comm/comm.js">
+
+    </script>
+    <script type="text/javascript"
+            src="../../../javascript/comm/list.js">
+
+    </script>
+    <script type="text/javascript"
+            src="../../../javascript/calendar-ch.js">
+
+    </script>
+    <script type="text/javascript"
+            src="../../../javascript/jquery-1.7.2.js">
+
+    </script>
+    <script type="text/javascript"
+            src="../../../javascript/locate.js">
+
+    </script>
+    <script type="text/javascript"
+            src="../../../javascript/select.js">
+
+    </script>
+
+    <script type="text/javascript">
+
+
+        function tick() {
+            var now = new Date();
+            var hours, minutes, seconds, noon;
+            var intHours, intMinutes, intSeconds;
+            intHours = now.getHours();
+            intMinutes = now.getMinutes();
+            intSeconds = now.getSeconds();
+            if (intHours < 24) {
+                hours = intHours + ":";
+                noon = "A.M.";
+            } else {
+                intHours = intHours - 24;
+                hours = intHours + ":";
+                noon = "P.M.";
+            }
+            if (intMinutes < 10) {
+                minutes = "0" + intMinutes + ":";
+            } else {
+                minutes = intMinutes + ":";
+            }
+            if (intSeconds < 10) {
+                seconds = "0" + intSeconds + " ";
+            } else {
+                seconds = intSeconds + " ";
+            }
+            timeString = hours + minutes + seconds;
+            var now = new Date();
+
+            //document.getElementById("nowTime").value = now.getFullYear()+"-"+(now.getMonth()+1)+"-"+now.getDate()+" "+timeString;
+            //window.setTimeout("tick();", 100);
+        }
+
+        //load事件
+        function check() {
+            //获得系统当前时间的方法
+            tick();
+        }
+
+        function sf() {
+            document.getElementById("passCheckcomment").value = "不通过";
+        }
+        function ly() {
+            document.getElementById("passCheckcomment").value = "通过";
+        }
+
+        function tosubmit() {
+            document.fm.submit();
+        }
+    </script>
+</head>
+
+<body onload="check(),ly()">
+    @using (Html.BeginForm("register", "Employ", FormMethod.Post))
+    {
+        <form action="/HR_Fist/recruit/recruitAction!returnList" name="fm" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="operate" value="doAdopt">
+            <input type="hidden" name="engageResume.resId" value="542" />
+            <table width="100%">
+                <tr>
+                    <td>
+                        <font color="black">您正在做的业务是：人力资源--招聘管理--录用管理--录用申请  </font>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">
+                        <input type="radio" name="er.id" value="释放简历" onclick="sf()">释放简历
+                        <input type="radio" name="er.id" value="申请录用" checked="checked" onclick="ly()">申请录用
+                        <input type="submit" value="确认" class="BUTTON_STYLE1">
+                        <input type="button" value="返回" class="BUTTON_STYLE1"
+                               onclick="history.back();">
+
+                    </td>
+                </tr>
+            </table>
+            <table width="100%" border="1" cellpadding=0 cellspacing=1
+                   bordercolorlight=#848284 bordercolordark=#eeeeee
+                   class="TABLE_STYLE1">
+                <tr>
+                    <td class="TD_STYLE1" width="11%">
+                        职位分类
+                    </td>
+                    <td width="14%" class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Res_id, new { type = "hidden" })
+                        @Html.TextBoxFor(e => e.Human_major_kind_name, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+
+
+                    </td>
+                    <td width="11%" class="TD_STYLE1">
+                        职位名称
+                    </td>
+                    <td width="14%" class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Human_major_name, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+
+                    </td>
+                    <td width="11%" class="TD_STYLE1">
+                        招聘类型
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Engage_type, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @*@Html.DropDownListFor(e => e.Engage_type, new SelectList(new[] { new { value = "校园招聘", text = "校园招聘" }, new { value = "社会招聘", text = "社会招聘" } }, "value", "text", 0), new { @class = "SELECT_STYLE1" })*@
+                        @*<input type="text" name="engageResume.engageType" value="&#26657;&#22253;&#25307;&#32856;" readonly="readonly" class="INPUT_STYLE2">*@
+
+                    </td>
+
+                    <td width="10%" rowspan="6" colspan="2" align="center">
+                        <img src="~/Uploaders/@ViewBag.tp" width="130" height="140" />
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="TD_STYLE1">
+                        姓名
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Human_name, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @*<input type="text" name="engageInterview.humanName" value="&#24352;&#39122;" readonly="readonly" class="INPUT_STYLE2">*@
+
+                    </td>
+                    <td class="TD_STYLE1">
+                        性别
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Human_sex, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @*<input type="text" name="engageResume.humanSex" value="&#30007;" readonly="readonly" class="INPUT_STYLE2">*@
+                    </td>
+                    <td class="TD_STYLE1">
+
+                        EMAIL
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Human_email, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="TD_STYLE1">
+                        电话号码
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Human_telephone, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @*<input type="text" name="engageResume.humanTelephone" value="84802802" readonly="readonly" class="INPUT_STYLE2">*@
+                    </td>
+                    <td class="TD_STYLE1">
+                        家庭电话
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Human_homephone, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @*<input type="text" name="engageResume.humanHomephone" value="84802888" readonly="readonly" class="INPUT_STYLE2">*@
+                    </td>
+                    <td class="TD_STYLE1">
+                        手机
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Human_mobilephone, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @*<input type="text" name="engageResume.humanMobilephone" value="13523322345" readonly="readonly" class="INPUT_STYLE2">*@
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="TD_STYLE1">
+                        住址
+                    </td>
+                    <td colspan="3" class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Human_address, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @*<input type="text" name="engageResume.humanAddress" value="&#28246;&#21335;&#38271;&#27801;" readonly="readonly" class="INPUT_STYLE2">*@
+                    </td>
+                    <td class="TD_STYLE1">
+                        邮编
+                    </td>
+                    <td class="TD_STYLE2">
+
+                        @Html.TextBoxFor(e => e.Human_postcode, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @*<input type="text" name="engageResume.humanPostcode" value="410000" readonly="readonly" class="INPUT_STYLE2">*@
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="TD_STYLE1">
+                        国籍
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Human_nationality, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @*<input type="text" name="engageResume.humanNationality" value="&#20013;&#22269;" readonly="readonly" class="INPUT_STYLE2">*@
+                    </td>
+                    <td class="TD_STYLE1">
+                        出生地
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Human_nationality, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @*<input type="text" name="engageResume.humanBirthplace" value="" readonly="readonly" class="INPUT_STYLE2">*@
+                    </td>
+                    <td class="TD_STYLE1">
+                        生日
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Human_birthday, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @*<input type="text" name="engageResume.humanBirthday" value="1992-02-02 12:00:00" readonly="readonly" class="INPUT_STYLE2">*@
+                    </td>
+                </tr>
+
+                <tr>
+                    <td width="11%" class="TD_STYLE1">
+                        民族
+                    </td>
+                    <td class="TD_STYLE2" width="14%">
+                        @Html.TextBoxFor(e => e.Human_race, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @*<input type="text" name="engageResume.humanRace" value="&#27721;&#26063;" readonly="readonly" class="INPUT_STYLE2">*@
+                    </td>
+                    <td class="TD_STYLE1">
+                        宗教信仰
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Human_religion, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @*<input type="text" name="engageResume.humanReligion" value="&#26080;" readonly="readonly" class="INPUT_STYLE2">*@
+                    </td>
+                    <td class="TD_STYLE1">
+                        政治面貌
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Human_party, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @*<input type="text" name="engageResume.humanParty" value="" readonly="readonly" class="INPUT_STYLE2">*@
+                    </td>
+                </tr>
+                <tr>
+
+                    <td class="TD_STYLE1">
+                        身份证号码
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Human_idcard, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @*<input type="text" name="engageResume.humanIdcard" value="430121199202022323" readonly="readonly" class="INPUT_STYLE2">*@
+                    </td>
+                    <td class="TD_STYLE1">
+                        年龄
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Human_age, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @*<input type="text" name="engageResume.humanAge" value="20" readonly="readonly" class="INPUT_STYLE2">*@
+                    </td>
+                    <td class="TD_STYLE1">
+                        毕业学校
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Human_college, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @*<input type="text" name="engageResume.humanCollege" value="&#38271;&#27801;&#29702;&#24037;" readonly="readonly" class="INPUT_STYLE2">*@
+                    </td>
+                    <td class="TD_STYLE1" width="10%">
+                        学历
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Human_educated_degree, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @*<input type="text" name="engageResume.humanEducatedDegree" value="&#22823;&#19987;" readonly="readonly" class="INPUT_STYLE2">*@
+                    </td>
+                </tr>
+                <tr>
+                    <td class="TD_STYLE1">
+                        教育年限
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Human_educated_years, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @*<input type="text" name="engageResume.humanEducatedYears" value="12" readonly="readonly" class="INPUT_STYLE2">*@
+                    </td>
+                    <td class="TD_STYLE1">
+                        学历专业
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Human_educated_major, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @*<input type="text" name="engageResume.humanEducatedMajor" value="&#35745;&#31639;&#26426;" readonly="readonly" class="INPUT_STYLE2">*@
+                    </td>
+                    <td class="TD_STYLE1">
+                        薪酬要求
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Demand_salary_standard, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @* <input type="text" name="engageResume.demandSalaryStandard" value="6000.0" readonly="readonly" class="INPUT_STYLE2">*@
+                    </td>
+                    <td class="TD_STYLE1">
+                        注册时间
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Regist_time, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @* <input type="text" name="engageResume.registTime" value="2012-11-25 01:50:30" readonly="readonly" class="INPUT_STYLE2">*@
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="TD_STYLE1">
+                        特长
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Human_specility, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @* <input type="text" name="engageResume.humanSpecility" value="java" readonly="readonly" class="INPUT_STYLE2">*@
+                    </td>
+                    <td class="TD_STYLE1">
+                        爱好
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Human_hobby, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @* <input type="text" name="engageResume.humanHobby" value="&#31726;&#29699;" readonly="readonly" class="INPUT_STYLE2">*@
+                    </td>
+                    <td class="TD_STYLE1">
+                        <span style="font-size: 10.5pt; font-family: 宋体;"></span>
+                        推荐人
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Checker, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @*<input type="text" name="engageResume.passChecker" value="zhangsan, zhangsan" readonly="readonly" class="INPUT_STYLE2">*@
+                    </td>
+                    <td class="TD_STYLE1">
+                        <span style="font-size: 10.5pt; font-family: 宋体;"></span>
+                        推荐时间
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Check_time, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @* <input type="text" name="engageResume.passCheckTime" value="2012-11-25 01:51:18" readonly="readonly" class="INPUT_STYLE2">*@
+                    </td>
+                </tr>
+                <tr>
+                    <td class="TD_STYLE1">
+                        个人履历
+                    </td>
+                    <td colspan="7" class="TD_STYLE2">
+                        @Html.TextAreaFor(e => e.Human_history_records, new { @class = "TEXTAREA_STYLE1", @readonly = "readonly" })
+                        @*@Html.TextBoxFor(e => e.Human_history_records, new { @class = "INPUT_STYLE2", @readonly = "readonly" })*@
+                        @*<textarea name="engageResume.humanHistoryRecords" rows="4"
+                              class="TEXTAREA_STYLE1" readonly="readonly"> &#20010;&#20154;&#23653;&#21382;
+                            </textarea>*@
+                    </td>
+                </tr>
+                <tr>
+                    <td class="TD_STYLE1">
+                        备注
+                    </td>
+                    <td colspan="7" class="TD_STYLE2">
+                        @Html.TextAreaFor(e => e.Remark, new { @class = "TEXTAREA_STYLE1", @readonly = "readonly" })
+                        @*@Html.TextBoxFor(e => e.Remark, new { @class = "INPUT_STYLE2", @readonly = "readonly" })*@
+                        @*<textarea name="engageResume.remark" rows="4" class="TEXTAREA_STYLE1" readonly="readonly"> &#22791;&#27880;
+                            </textarea>*@
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="TD_STYLE1">
+                        筛选推荐意见
+                    </td>
+                    <td class="TD_STYLE2" colspan="7">
+                        @Html.TextAreaFor(e => e.Recomandation, new { @class = "TEXTAREA_STYLE1", @readonly = "readonly" })
+                        @*@Html.TextBoxFor(e => e.Recomandation, new { @class = "INPUT_STYLE2", @readonly = "readonly" })*@
+                        @*<textarea name="engageResume.recomandation" rows="4" class="TEXTAREA_STYLE1" readonly="readonly">&#25512;&#33616;						</textarea>*@
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="TD_STYLE1">
+                        面试次数
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Interview_amount, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @*<input type="text" name="engageInterview.interviewAmount" value="1" class="INPUT_STYLE2" readonly="readonly" />*@
+                    </td>
+                    <td class="TD_STYLE1">
+                        形象评价
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Image_degree, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @* <input type="text" name="engageInterview.imageDegree" value="A" class="INPUT_STYLE2" readonly="readonly" />*@
+
+                    </td>
+                    <td class="TD_STYLE1">
+                        口才评价
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Native_language_degree, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @* <input type="text" name="engageInterview.nativeLanguageDegree" value="A" class="INPUT_STYLE2" readonly="readonly" />*@
+
+                    </td>
+                    <td class="TD_STYLE1">
+                        外语口语能力
+                    </td>
+                    <td class="TD_STYLE1">
+                        @Html.TextBoxFor(e => e.Foreign_language_degree, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @* <input type="text" name="engageInterview.foreignLanguageDegree" value="A" class="INPUT_STYLE2" readonly="readonly" />*@
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="TD_STYLE1">
+                        应变能力
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Response_speed_degree, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @* <input type="text" name="engageInterview.responseSpeedDegree" value="A" class="INPUT_STYLE2" readonly="readonly" />*@
+
+                    </td>
+                    <td class="TD_STYLE1">
+                        EQ
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.EQ_degree, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @*  <input type="text" name="engageInterview.eqDegree" value="A" class="INPUT_STYLE2" readonly="readonly" />*@
+
+                    </td>
+                    <td class="TD_STYLE1">
+                        IQ
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.IQ_degree, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @*   <input type="text" name="engageInterview.iqDegree" value="A" class="INPUT_STYLE2" readonly="readonly" />*@
+
+                    </td>
+                    <td class="TD_STYLE1">
+                        综合素质
+                    </td>
+                    <td class="TD_STYLE1">
+                        @Html.TextBoxFor(e => e.Multi_quality_degree, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @* <input type="text" name="engageInterview.multiQualityDegree" value="A" class="INPUT_STYLE2" readonly="readonly" />*@
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="TD_STYLE1">
+                        面试人
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Register, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @*   <input type="text" name="engageInterview.register" value="zhangsan" readonly="readonly" class="INPUT_STYLE2" />*@
+                    </td>
+                    <td class="TD_STYLE1">
+                        面试时间
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Registe_time, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @* <input type="text" name="engageInterview.registeTime" value="2012-11-25 12:00:00.0" readonly="readonly" class="INPUT_STYLE2" />*@
+
+                    </td>
+                    <td class="TD_STYLE1">
+                        筛选人
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Checker, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @*  <input type="text" name="engageInterview.checker" value="zhangsan" readonly="readonly" class="INPUT_STYLE2" />*@
+
+                    </td>
+                    <td class="TD_STYLE1">
+                        筛选时间
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Check_time, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                        @*  <input type="text" name="engageInterview.checkTime"*@
+                        <!--id="nowTime" readonly="readonly"
+                        class="INPUT_STYLE2">-->
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="TD_STYLE1">
+                        录用申请审核意见
+                    </td>
+                    <td class="TD_STYLE2" colspan="7">
+                        @Html.TextAreaFor(e => e.Pass_checkcomment, new { @class = "TEXTAREA_STYLE1", @id = "passCheckcomment" })
+                        @*@Html.TextBoxFor(e => e.Pass_checkcomment, new { @class = "INPUT_STYLE2", @readonly = "readonly" })*@
+                        @*<textarea name="engageResume.passCheckcomment" class="TEXTAREA_STYLE1"
+                            rows="4" readonly="readonly" id="passCheckcomment">通过</textarea>*@
+                    </td>
+                </tr>
+            </table>
+        </form>
+    }
+    <script type="text/javascript">
+        var vue = new Vue({
+            el: "#app",
+            data: {
+                imageUrl: '',
+                tpUrl: ''
+            },
+            methods: {
+                //上传方法全局文件
+                handleAvatarSuccess(res, file) {//上传成功的钩子,获取后端的返回结果
+                    this.imageUrl = URL.createObjectURL(file.raw);//获取上传成功之后的图片路径
+                    this.tpUrl = res;
+                    $("#tp").val(res);
+
+
+
+                },
+                beforeAvatarUpload(file) {//文件上传前被调用,对文件进行验证
+                    const isJPG = file.type === 'image/jpeg';
+                    const isLt2M = file.size / 1024 / 1024 < 2;
+
+                    if (!isJPG) {
+                        this.$message.error('上传头像图片只能是 JPG 格式!');
+                    }
+                    if (!isLt2M) {
+                        this.$message.error('上传头像图片大小不能超过 2MB!');
+                    }
+                    return isJPG && isLt2M;
+                },
+                handlePreview(file) {
+
+                },
+                handleRemove(file, fileList) {
+                    //移除列表文件
+
+                    console.log(file);
+                    let index = this.fileNameList.index0f(file.name);
+                    console.log(index);
+                    this.fileNameList.splice(index, 1);
+                    console.log(" 删除后的", this.fileNameList);
+                }
+
+
+            }
+            , mounted: function () {
+
+            }
+        })
+    </script>
+</body>
+
+</html>

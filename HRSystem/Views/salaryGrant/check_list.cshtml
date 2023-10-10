@@ -1,0 +1,168 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-trasitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="../../css/table.css" type="text/css" />
+    <title>无标题文档</title>
+    <script src="~/Scripts/vue/dist/vue.js"></script>
+    <script src="~/Scripts/element-ui/lib/index.js"></script>
+    <link href="~/Scripts/element-ui/lib/theme-chalk/index.css" rel="stylesheet" />
+    <script src="~/Scripts/axios/dist/axios.js"></script>
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <style type="text/css">
+        <!--
+        .style3 {
+            color: #0000CC
+        }
+
+        td {
+            text-align: center
+        }
+        -->
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <el-card class="box-card">
+            <div slot="header" class="clearfix">
+                <el-breadcrumb separator="/">
+                    <el-breadcrumb-item :to="{ path: '/' }">人力资源</el-breadcrumb-item>
+                    <el-breadcrumb-item><a href="/">薪酬发放管理</a></el-breadcrumb-item>
+                    <el-breadcrumb-item>薪酬发放登记审核</el-breadcrumb-item>
+                </el-breadcrumb>
+            </div>
+            <br>
+            <div>
+                <el-table :data="list"
+                          border
+                          height="260"
+                          style="width: 100%; ">
+                    <el-table-column prop="salary_grant_id"
+                                     label="薪酬发放编号"
+                                     width="180">
+                    
+                    </el-table-column>
+                    <el-table-column prop="first_kind_name"
+                                     label="I级机构名称"
+                                     width="180">
+                    </el-table-column>
+
+                    <el-table-column prop="second_kind_name"
+                                     label="II级机构名称"
+                                     width="180">
+                        <template slot-scope="scope">
+                            <span v-if="scope.row.second_kind_name==null">空</span>
+                            <span v-if="scope.row.second_kind_name!=null">{{scope.row.second_kind_name}}</span>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column prop="third_kind_name"
+                                     label="III级机构名称"
+                                     width="180">
+                        <template slot-scope="scope">
+                            <span v-if="scope.row.third_kind_name==null">空</span>
+                            <span v-if="scope.row.third_kind_name!=null">{{scope.row.third_kind_name}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="human_amount"
+                                     label="人数"
+                                     width="180">
+                    </el-table-column>
+                    <el-table-column prop="salary_standard_sum"
+                                     label="基本薪酬总额(元)"
+                                     width="180">
+                    </el-table-column>
+                    <el-table-column label="操作">
+                        <template slot-scope="scope">
+                            <el-button size="mini" v-on:click="update(scope.row)">复核</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </div>
+        </el-card>
+        <el-pagination v-on:size-change="handleSizeChange"
+                       v-on:current-change="handleCurrentChange"
+                       :currentpage="currentPage"
+                       :page-sizes="[3, 6, 9, 12]"
+                       :page-size="pageSize"
+                       layout="total, sizes, prev, pager, next, jumper"
+                       :total="rows">
+        </el-pagination>
+
+
+    </div>
+    <script type="text/javascript">
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                list: [],
+                currentPage: 1,
+                pageSize: 3,
+                rows: 0,
+            },
+            methods: {
+                fill: function () {
+                    axios.get('/salaryGrant/SGFindFenye', {
+                        params: {
+                            str: "1=1 and [check_status] =0",
+                            CurrentPage: this.currentPage,
+                            PageSize: this.pageSize
+                        }
+                    },
+                        {
+                        })
+                        .then(res => {
+                            console.log(res);
+                            this.list = res.data.List;
+                            this.rows = res.data.Rows;
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        })
+                },
+                handleSizeChange: function (size) {
+                    this.pageSize = size;
+                    this.currentPage = 1;
+                    this.fill();
+                },
+                handleCurrentChange: function (cpage) {
+                    this.currentPage = cpage;
+                    this.fill();
+                },
+                update(obj) {
+                    console.log(obj);
+                    var str = "";
+                    if (obj.second_kind_name == " " && obj.third_kind_name == " ") {
+                        str += " paid_salary_sum IS  NULL AND  second_kind_name =' '  AND [first_kind_id]=" + obj.first_kind_id + "";
+                    } else if (obj.second_kind_id != null && obj.third_kind_name == " ") {
+                        str += " paid_salary_sum IS  NULL AND [third_kind_name] =' ' and [second_kind_name] !=' ' AND [second_kind_id]=" + obj.second_kind_id + "";
+                    } else if (obj.third_kind_id != "") {
+                        str += " paid_salary_sum IS  NULL AND [third_kind_name] !=' ' AND [third_kind_id]=" + obj.third_kind_id + "";
+                    }
+                    console.log(str);
+                    location.href = "/salaryGrant/check?str=" + str;
+                }
+            },
+            mounted: function () {
+                this.fill();
+            },
+            // 时间格式
+            filters: {
+                ftime: function (value, spe) {
+                    if (value == '/Date(-62135596800000)/') {
+                        return '空'
+                    }
+                    var dt = new Date(parseInt(value.replace("/Date(", "").replace(")/", ""), 10));
+                    return dt.getFullYear() + "年" + (dt.getMonth() + 1) + "月" + dt.getDate() + " 日";
+                }
+            },
+        })
+    </script>
+</body>
+</html>

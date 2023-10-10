@@ -1,0 +1,137 @@
+﻿
+@{
+    Layout = null;
+}
+@using Model;
+@{IEnumerable<Config_major_cader> cm = ViewBag.y; }
+@{IEnumerable<config_file_first_kind_cader> cffk = ViewBag.u; }
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-trasitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="../../css/table.css" type="text/css">
+    <link rel="stylesheet" type="text/css" media="all"
+          href="../../javascript/calendar/calendar-win2k-cold-1.css">
+    <script type="text/javascript" src="../../javascript/calendar/cal.js"></script>
+    <script type="text/javascript" src="../../javascript/comm/comm.js"></script>
+    <script type="text/javascript" src="../../javascript/comm/list.js"></script>
+    <script type="text/javascript" src="../../javascript/jquery-1.7.2.js"></script>
+    <script type="text/javascript" src="../../javascript/calendar-ch.js"></script>
+    <script type="text/javascript" src="../../javascript/comm/time.js"></script>
+    <link rel="stylesheet" href="../../css/cwcalendar.css" type="text/css"></link>
+    <script src="~/Scripts/vue/dist/vue.js"></script>
+    <script src="~/Scripts/element-ui/lib/index.js"></script>
+    <link href="~/Scripts/element-ui/lib/theme-chalk/index.css" rel="stylesheet" />
+    <script src="~/Scripts/axios/dist/axios.js"></script>
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+</head>
+
+<body>
+    <div id="app">
+
+        <input type="hidden" name="page.startPage" value="0">
+        <table width="100%">
+            <tr>
+                <td>
+                    <font color="black">您正在做的业务是：人力资源--调动管理--调动查询 </font>
+                </td>
+            </tr>
+            <tr>
+                <td align="right">
+                    <input type="button" value="查询" v-on:click="btn_cx()"
+                           class="BUTTON_STYLE1">
+                </td>
+            </tr>
+        </table>
+        <table width="100%" border="1" cellpadding=0 cellspacing=1
+               bordercolorlight=#848284 bordercolordark=#eeeeee
+               class="TABLE_STYLE1">
+            <tr class="TR_STYLE1">
+                <td width="16%" class="TD_STYLE1">
+                    请选择员工所在I、II、III级机构
+                </td>
+                <td width="84%" class="TD_STYLE2">
+
+                    <el-cascader :options="cffk"
+                                 ref="cascaderMallCatergory"
+                                 v-model="FirstKindNameValues"
+                                 :props="{ checkStrictly: true }"
+                                 clearable></el-cascader>
+                </td>
+            </tr>
+            <tr>
+                <td class="TD_STYLE1">
+                    请选择职位分类和职位名称
+                </td>
+                <td width="84%" class="TD_STYLE2">
+                    <el-cascader :options="cm"
+                                 ref="cascaderMallCatergory1"
+                                 v-model="MajorKindNameValues"
+                                 :props="{ checkStrictly: true }"
+                                 clearable></el-cascader>
+
+
+                </td>
+            </tr>
+            <tr>
+                <td class="TD_STYLE1">
+                    请输入建档时间
+                </td>
+                <td width="84%" class="TD_STYLE2">
+                    <input name="utilbean.startDate" onclick="aa('utilbean.startDate')" type="text" class="INPUT_STYLE2" id="date_start" style="width:24% " value="" size="30">
+                    至<input type="text" name="utilbean.endDate" onclick="aa('utilbean.endDate')" value="" style="width:24% " class="INPUT_STYLE2" id="date_end">
+                    （YYYY-MM-DD）
+                </td>
+            </tr>
+        </table>
+    </div>
+    <script type="text/javascript">
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                cm: [],
+                cffk: [],
+                FirstKindNameValues: "",
+                MajorKindNameValues:"",
+            },
+            methods: {
+                fill: function () {
+                    this.cm =@Html.Raw(Json.Encode(cm));   //职称级联
+                    this.cffk =@Html.Raw(Json.Encode(cffk));  //I、II、III、级架构级联
+                },
+                btn_cx() {
+                    var str = " check_status=1"
+                    if (this.FirstKindNameValues.length == 1) {
+                        str += " AND  [new_second_kind_name] =' '  AND new_first_kind_id=" + this.FirstKindNameValues[0] + "";
+                    } else if (this.FirstKindNameValues.length == 2) {
+                        str += " AND [new_third_kind_name] =' ' and  new_second_kind_name !=' ' AND new_second_kind_id =" + this.FirstKindNameValues[1] + ""
+                    } else if (this.FirstKindNameValues.length == 3) {
+                        str += " AND new_third_kind_name !=' '  AND new_third_kind_id =" + this.FirstKindNameValues[2] + "";
+                    }
+                    if (this.MajorKindNameValues.length !=0) {
+                        str += " AND  new_major_kind_id =" + this.MajorKindNameValues[0] + " and [new_major_id] = " + this.MajorKindNameValues[1]+"";
+                    }
+                    location.href = "/Transfer/list?str=" + str
+                    console.log(str);
+                }
+            },
+             mounted: function () {
+                    this.fill();
+                },
+                // 时间格式
+                filters: {
+                    ftime: function (value, spe) {
+                        if (value == '/Date(-62135596800000)/') {
+                            return '空'
+                        }
+                        var dt = new Date(parseInt(value.replace("/Date(", "").replace(")/", ""), 10));
+                        return dt.getFullYear() + "年" + (dt.getMonth() + 1) + "月" + dt.getDate() + " 日";
+                    }
+                }
+
+        })
+    </script>
+
+</body>
+</html>
+

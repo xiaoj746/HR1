@@ -1,0 +1,175 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-trasitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="../../css/table.css"
+          type="text/css"></link>
+    <script type="text/javascript"
+            src="../../javascript/comm/comm.js">
+    </script>
+
+    <script type="text/javascript" src="../../javascript/jquery-1.7.2.js"></script>
+    <script src="~/Scripts/vue/dist/vue.js"></script>
+    <script src="~/Scripts/element-ui/lib/index.js"></script>
+    <link href="~/Scripts/element-ui/lib/theme-chalk/index.css" rel="stylesheet" />
+    <script src="~/Scripts/axios/dist/axios.js"></script>
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    @*<script type="text/javascript">
+        function deleteThirdKind(id) {
+            $.ajax({
+
+                url: "/HR_Fist/customiz/customizAction!doDeleteThirdKind",
+                data: "cftk.ftkId=" + id,
+                dataType: "text",
+                success: function () {
+                    alert("删除成功！");
+                    location.reload();
+                },
+                type: "post"
+            });
+        }
+    </script>*@
+</head>
+
+<script type="text/javascript">
+
+		function submission(){
+			document.forms[0].submit();
+		}
+
+		function page(currentPage){
+			document.getElementById("pid").value=currentPage;
+			document.forms[0].submit();
+		}
+
+</script>
+
+<body>
+
+    <div id="app">
+
+        <el-card class="box-card">
+            <div slot="header" class="clearfix">
+                <el-breadcrumb separator="/">
+                    <el-breadcrumb-item :to="{ path: '/' }">您正在做的业务是：人力资源</el-breadcrumb-item>
+                    <el-breadcrumb-item><a href="/">客户化设置</a></el-breadcrumb-item>
+                    <el-breadcrumb-item><a href="/">人力资源档案管理设置</a></el-breadcrumb-item>
+                    <el-breadcrumb-item>III级机构设置</el-breadcrumb-item>
+                </el-breadcrumb>
+            </div>
+            <div>
+                <el-row>
+                    <el-col :span="6">
+                        <el-button type="primary" size="small" onclick="window.location.href='/Client/third_kind_register'">新增</el-button>
+                    </el-col>
+                </el-row>
+                <el-table :data="list"
+                          border
+                          height="260"
+                          style="width: 100%; ">
+                    <el-table-column prop="first_kind_name"
+                                     label="I级机构名称"
+                                     width="140">
+                    </el-table-column>
+                    <el-table-column prop="second_kind_name"
+                                     label="II级机构名称"
+                                     width="140">
+                    </el-table-column>
+                    <el-table-column prop="third_kind_id"
+                                     label="III级机构编号"
+                                     width="140">
+                    </el-table-column>
+                    <el-table-column prop="third_kind_name"
+                                     label="III级机构名称"
+                                     width="140">
+                    </el-table-column>
+                    <el-table-column prop="third_kind_sale_id"
+                                     label="销售责任人编号"
+                                     width="140">
+                    </el-table-column>
+                    <el-table-column prop="third_kind_is_retail"
+                                     label="三级机构是否为零售店"
+                                     width="140">
+                    </el-table-column>
+                    <el-table-column label="操作">
+                        <template slot-scope="scope">
+                            <el-button size="mini" v-on:click="update(scope.row.ftk_id)">变更</el-button>
+                            <el-button size="mini" type="danger" v-on:click="remove(scope.row.ftk_id)">删除</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </div>
+        </el-card>
+    </div>
+    <script type="text/javascript">
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                list: [],
+
+            },
+            methods: {
+                fill: function () {
+                    axios.get('/Client/TK_Show', {
+                    })
+                        .then(res => {
+                            console.log(res);
+                            this.list = res.data;
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        })
+                },
+                remove(id) {
+                    var t = this;
+                    if (confirm("确定删除此数据吗？")) {
+                        axios.get('/Client/FTK_Delete', {
+                            params: {
+                                ftkID: id
+                            }
+                        })
+                            .then(res => {
+                                if (res.data == 1) {
+                                    this.$message({
+                                        message: "删除成功!",
+                                        type: "success",
+                                    });
+                                    t.fill();
+                                } else {
+                                    alert('删除失败！')
+                                }
+                            })
+                            .catch(err => {
+                                console.log(err);
+                            })
+                    }
+
+                },
+                update(id) {
+                    location.href = '/Client/third_kind_change?tkID=' + id + ''
+                },
+            },
+            mounted: function () {
+                this.fill();
+            },
+            //时间格式
+            //filters: {
+            //    ftime: function (value, spe) {
+            //        if (value == '/Date(-62135596800000)/') {
+            //            return '空'
+            //        }
+            //        var dt = new Date(parseInt(value.replace("/Date(", "").replace(")/", ""), 10));
+            //        return dt.getFullYear() + "-" + (dt.getMonth() + 1) + "-" + dt.getDate();
+            //    }
+            //},
+        })
+    </script>
+</body>
+</html>
+
+

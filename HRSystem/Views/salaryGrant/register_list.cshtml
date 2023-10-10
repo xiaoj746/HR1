@@ -1,0 +1,283 @@
+﻿
+@{
+    Layout = null;
+}
+@using Model
+@{IEnumerable<human_file_XJ> item = ViewBag.s; }
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-trasitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script type="text/javascript"
+            src="../../javascript/jquery-1.7.2.js">
+    </script>
+    <link rel="stylesheet" href="../../css/table.css" type="text/css" />
+    <script type="text/javascript" src="../../javascript/comm/comm.js"></script>
+
+
+    <script src="~/Scripts/vue/dist/vue.js"></script>
+    <script src="~/Scripts/element-ui/lib/index.js"></script>
+    <link href="~/Scripts/element-ui/lib/theme-chalk/index.css" rel="stylesheet" />
+    <script src="~/Scripts/axios/dist/axios.js"></script>
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <title>无标题文档</title>
+    <STYLE type="text/css">
+        td {
+            text-align: center
+        }
+    </STYLE>
+</head>
+<body>
+    <div id="app">
+        <el-card class="box-card">
+            <div slot="header" class="clearfix">
+                <el-breadcrumb separator="/">
+                    <el-breadcrumb-item :to="{ path: '/' }">人力资源</el-breadcrumb-item>
+                    <el-breadcrumb-item><a href="/">薪酬标准管理</a></el-breadcrumb-item>
+                    <el-breadcrumb-item>薪酬发放登记(负责人控制)</el-breadcrumb-item>
+                </el-breadcrumb>
+            </div>
+            <br>
+                薪酬总数:<i style="color:red">{{this.count}}</i>，
+                总人数:<i style="color:red">{{this.peopleNums}}</i>，基本薪酬总数:<i style="color:red">{{this.demandSalarySum}}</i>，实发总额:<i style="color:red">{{this.demandSalarySum}}</i>
+
+          
+            <div>
+                <el-table :data="list"
+                          border
+                          height="260"
+                          style="width: 100%; ">
+                    <el-table-column label="序号"
+                                     width="180">
+                        <template slot-scope="scope">
+                            {{scope.$index+1}}
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="first_kind_name"
+                                     label="I级机构名称"
+                                     width="180">
+                    </el-table-column>
+
+                    <el-table-column v-if=" this.second_kind_id!=null" prop="second_kind_name"
+                                     label="II级机构名称"
+                                     width="180">
+                     
+                    </el-table-column>
+
+                    <el-table-column v-if="this.third_kind_id!=null"
+                                     prop="third_kind_name"
+                                     label="III级机构名称"
+                                     width="180">
+                    </el-table-column>
+                    <el-table-column prop="Number"
+                                     label="人数"
+                                     width="180">
+                    </el-table-column>
+                    <el-table-column prop="salary_sum"
+                                     label="基本薪酬总额(元)"
+                                     width="180">
+                    </el-table-column>
+                    <el-table-column label="操作">
+
+                        <template slot-scope="scope">
+                            <el-button size="mini" v-on:click="update(scope.row)">登记</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </div>
+        </el-card>
+    </div>
+    <script type="text/javascript">
+        var str = "";
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                list: [],
+                second_kind_id: "",
+                third_kind_id: "",
+                count: 0,  //薪酬总数
+                peopleNums: 0,  //总人数
+                demandSalarySum: 0, //基本薪酬总数
+                paidSalarySum: 0,   //实发总额
+            },
+            methods: {
+                fill: function () {
+                    this.list =@Html.Raw(Json.Encode(item));
+                    console.log(this.list);
+                    this.count = this.list.length;
+                    for (var i = 0; i < this.list.length; i++) {
+                        this.second_kind_id = this.list[i].second_kind_id;
+                        this.third_kind_id = this.list[i].third_kind_id;
+                        this.peopleNums += this.list[i].Number;
+                        this.demandSalarySum += this.list[i].salary_sum;
+                        this.paidSalarySum += this.list[i].paid_salary_sum;
+                    }
+                    @*this.SSD.standard_id =@Html.Raw(Json.Encode(ss.standard_id));
+                    this.SSD.standard_name =@Html.Raw(Json.Encode(ss.standard_name));
+                    this.SSD.salary_sum =@Html.Raw(Json.Encode(ss.salary_sum));
+                    this.SSD.designer =@Html.Raw(Json.Encode(ss.designer));
+                    this.SSD.checker =@Html.Raw(Json.Encode(ss.checker));
+                    this.SSD.remark =@Html.Raw(Json.Encode(ss.remark));*@
+                },
+                update(obj) {
+                    console.log(obj);
+                    if (obj.second_kind_name == " " && obj.third_kind_name == " ") {
+                        str = " paid_salary_sum IS  NULL AND  [second_kind_name] =''  AND [first_kind_id]=" + obj.first_kind_id + "";
+                    } else if (obj.second_kind_name != " " && obj.third_kind_name == " ") {
+                        str = " paid_salary_sum IS  NULL AND  [third_kind_name] ='' and [second_kind_name] !='' AND [second_kind_id]=" + obj.second_kind_id + "";
+                    } else if (obj.third_kind_name != " ") {
+                        str = " paid_salary_sum IS  NULL AND [third_kind_name] !='' AND [third_kind_id]=" + obj.third_kind_id + "";
+                    }
+                    console.log(str);
+                    location.href = "/salaryGrant/register_commit?str=" + str;
+
+                }
+            },
+            mounted: function () {
+                this.fill();
+            },
+            //时间格式
+            //filters: {
+            //    ftime: function (value, spe) {
+            //        if (value == '/Date(-62135596800000)/') {
+            //            return '空'
+            //        }
+            //        var dt = new Date(parseInt(value.replace("/Date(", "").replace(")/", ""), 10));
+            //        return dt.getFullYear() + "-" + (dt.getMonth() + 1) + "-" + dt.getDate();
+            //    }
+            //},
+        })
+    </script>
+</body>
+
+
+@*<body>
+
+        <table width="100%">
+            <tr>
+                <td colspan="2" style="text-align: left">
+                    <font color="black">
+                        您正在做的业务是：人力资源--薪酬标准管理--薪酬发放登记(负责人控制)
+                    </font>
+
+                </td>
+            </tr>
+
+        </table>
+        <br>
+        薪酬总数:3，
+        总人数:8，基本薪酬总数:141821.0，实发总额:1998.0
+        <table width="100%" border="1" cellpadding=0 cellspacing=1
+               bordercolorlight=#848284 bordercolordark=#eeeeee
+               class="TABLE_STYLE1">
+
+            <tr>
+                <td width="10%" class="TD_STYLE1">
+                    <span>序号</span>
+                </td>
+
+
+                <td width="40%" class="TD_STYLE1">
+                    <span>I级机构名称</span>
+                </td>
+
+
+
+
+
+
+
+
+                <td width="10%" class="TD_STYLE1">
+                    <span>人数</span>
+                </td>
+                <td width="10%" class="TD_STYLE1">
+                    基本薪酬总额(元)
+                </td>
+                <td width="10%" class="TD_STYLE1">
+                    登记
+                </td>
+            </tr>
+
+
+            <tr class="TD_STYLE2">
+                <td>
+                    1
+                </td>
+
+
+
+
+                <td> &#8544;&#32423;&#32467;&#26500;  </td>
+
+
+
+
+
+
+                <td>
+                    5
+                </td>
+                <td>
+                    139823.0
+                </td>
+                <td>
+                    <a href="register_commit.html">登 记</a>
+                </td>
+            </tr>
+
+
+            <tr class="TD_STYLE2">
+                <td>
+                    2
+                </td>
+
+
+
+
+                <td> &#38598;&#22242;  </td>
+
+
+
+
+
+
+                <td>
+                    1
+                </td>
+                <td>
+                    666.0
+                </td>
+                <td>
+                    <a href="register_commit.html">登 记</a>
+                </td>
+            </tr>
+
+
+            <tr class="TD_STYLE2">
+                <td>
+                    3
+                </td>
+                <td> &#24635;&#37096;  </td>
+                <td>
+                    2
+                </td>
+                <td>
+                    1332.0
+                </td>
+                <td>
+                    <a href="register_commit.html">登 记</a>
+                </td>
+            </tr>
+
+
+
+        </table>
+        <p>
+
+            &nbsp;
+        </p>
+
+    </body>*@
+</html>

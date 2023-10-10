@@ -1,0 +1,169 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>My JSP 'interview-list.jsp' starting page</title>
+    <link rel="stylesheet"
+          href="../../../css/table.css" type="text/css">
+    <link rel="stylesheet"
+          href="../../../css/cwcalendar.css"
+          type="text/css">
+    <script type="text/javascript"
+            src="../../../javascript/comm/comm.js">
+
+    </script>
+    <script type="text/javascript"
+            src="../../../javascript/comm/list.js">
+
+    </script>
+    <script type="text/javascript"
+            src="../../../javascript/calendar-ch.js">
+
+    </script>
+    <script type="text/javascript"
+            src="../../../javascript/jquery-1.7.2.js">
+
+    </script>
+    <script type="text/javascript"
+            src="../../../javascript/locate.js">
+
+    </script>
+    <script type="text/javascript"
+            src="../../../javascript/select.js">
+
+    </script>
+    <script src="~/Scripts/vue/dist/vue.js"></script>
+    <script src="~/Scripts/element-ui/lib/index.js"></script>
+    <link href="~/Scripts/element-ui/lib/theme-chalk/index.css" rel="stylesheet" />
+    <script src="~/Scripts/axios/dist/axios.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <input type="hidden" name="utilBean.currPage" id="page" />
+        <table width="100%">
+            <tr>
+                <td>
+                    <font color="black">
+                        您正在做的业务是：人力资源--招聘管理--面试管理--面试结果登记--有效简历列表
+                    </font>
+                </td>
+            </tr>
+            <tr>
+            </tr>
+        </table>
+        <el-table :data="list"
+                  border
+                  height="260"
+                  style="width: 100%; ">
+            <el-table-column prop="Resume_id"
+                             label="档案编号"
+                             width="180">
+              
+            </el-table-column>
+            <el-table-column prop="Human_name"
+                             label="姓名"
+                             width="180">
+            </el-table-column>
+            <el-table-column prop="Human_major_kind_name"
+                             label="职位分类"
+                             width="180">
+            </el-table-column>
+            <el-table-column prop="Human_major_name"
+                             label="职位名称"
+                             width="180">
+            </el-table-column>
+            <el-table-column prop="Interview_amount"
+                             label="面试次数"
+                             width="180">
+            </el-table-column>
+            <el-table-column prop="Registe_time"
+                             label="面试时间"
+                             width="180">
+               
+                <template slot-scope="scope">
+                    {{scope.row.Registe_time|ftime}}
+                </template>
+            </el-table-column>
+
+            <el-table-column prop="Multi_quality_degree"
+                             label="综合素质"
+                             width="180">
+               
+            </el-table-column>
+            <el-table-column label="操作"
+                             width="180">
+                <template slot-scope="scope">
+                    <el-button size="mini" v-on:click="dj(scope.row)">筛选</el-button>
+                </template>
+            </el-table-column>
+
+        </el-table>
+        <el-pagination v-on:size-change="handleSizeChange"
+                       v-on:current-change="handleCurrentChange"
+                       :currentpage="currentPage"
+                       :page-sizes="[2,4]"
+                       :page-size="pageSize"
+                       layout="total, sizes, prev, pager, next, jumper"
+                       :total="rows">
+        </el-pagination>
+    </div>
+    <script type="text/javascript">
+            var vm = new Vue({
+                el: "#app",
+                data: {
+                    list: [],
+                    pageSize: 2,
+                    currentPage: 1,
+                    rows:1
+                },
+                methods: {
+                    fill() {
+                        axios.get('/Interview/mssx', {
+                            params: {
+                                pageSize: this.pageSize,
+                                currentPage:this.currentPage
+                            }
+                        }).then(res => {
+                            console.log(res);
+                            this.list = res.data.List;
+                            this.rows = res.data.Rows;
+                        }).catch(err => {
+                            console.log('1');
+                        })
+                    }, handleSizeChange: function (size) {
+                        this.pageSize = size;
+                        this.currentPage = 1;
+                        this.fill();
+                    },
+                    handleCurrentChange: function (cpage) {
+                        this.currentPage = cpage;
+                        this.fill();
+                    },
+                    dj(row) {
+                        console.log(row);
+                        location.href = '/Interview/interview_sift?id=' + row.Resume_id
+                    }
+                },
+                mounted: function () {
+                    this.fill();
+                },
+                filters: {
+                    ftime: function (value, spe) {
+                        if (value == '/Date(-62135596800000)/') {
+                            return '空'
+                        }
+                        var dt = new Date(parseInt(value.replace("/Date(", "").replace(")/", ""), 10));
+                        return dt.getFullYear() + "-" + (dt.getMonth() + 1) + "-" + dt.getDate();
+                    }
+                },
+            })
+    </script>
+</body>
+</html>

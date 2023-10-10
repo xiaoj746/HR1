@@ -1,0 +1,419 @@
+﻿
+@{
+    Layout = null;
+}
+@using Model
+@model Human_file
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet"
+          href="../../css/table.css" type="text/css">
+    <link rel="stylesheet"
+          href="../../css/cwcalendar.css" type="text/css">
+    <script type="text/javascript"
+            src="../../javascript/comm/comm.js">
+    </script>
+    <script language="javascript"
+            src="../../javascript/winopen/winopenm.js">
+    </script>
+    <script type="text/javascript"
+            src="../../javascript/calendar-ch.js">
+    </script>
+    <script type="text/javascript"
+            src="../../javascript/jquery-1.7.2.js">
+    </script>
+    <script type="text/javascript"
+            src="../../javascript/jquery.messager.js">
+    </script>
+    <script src="../../javascript/time.js"></script>
+    <script type="text/javascript"
+            src="../../javascript/human_check.js">
+    </script>
+    <script type="text/javascript"
+            src="../../javascript/human_input_check.js">
+    </script>
+    <script src="~/Scripts/vue/dist/vue.js"></script>
+    <script src="~/Scripts/element-ui/lib/index.js"></script>
+    <link href="~/Scripts/element-ui/lib/theme-chalk/index.css" rel="stylesheet" />
+    <script src="~/Scripts/axios/dist/axios.js"></script>
+</head>
+<body>
+    <div id="app">
+        @using (Html.BeginForm("human_check", "HumanResources", FormMethod.Post))
+        {
+            <table width="100%">
+                <tr>
+                    <td>
+                        <font color="black">您正在做的业务是：人力资源--人力资源档案管理--人力资源档案复核 </font>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">
+                        <input type="submit" value="复核通过" class="BUTTON_STYLE1" />
+                        <input type="reset" value="清除" class="BUTTON_STYLE1">
+                        <input type="button" value="返回" class="BUTTON_STYLE1"
+                               onclick="history.back()">
+                    </td>
+                </tr>
+            </table>
+            <table width="100%" border="1" cellpadding=3 cellspacing=1
+                   bordercolorlight=#848284 bordercolordark=#eeeeee
+                   class="TABLE_STYLE1">
+                <tr>
+                    <td class="TD_STYLE1" width="10%">
+                        档案编号
+                    </td>
+                    <td colspan="6" class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Huf_id, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                    </td>
+                    <td rowspan="6" width="13%" style="text-align: center;">
+                        <img src="~/Uploaders/@ViewBag.tp" width="130" height="140" />
+                      
+                    </td>
+                </tr>
+                <tr>
+                    <td class="TD_STYLE1" width="10%">
+                        I级机构
+                    </td>
+                    <td width="13%" class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.First_kind_name, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                    </td>
+                    <td width="10%" class="TD_STYLE1">
+                        II级机构
+                    </td>
+                    <td width="13%" class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Second_kind_name, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                    </td>
+                    <td width="10%" class="TD_STYLE1">
+                        III级机构
+                    </td>
+                    <td class="TD_STYLE2" colspan="2" width="2%">
+                        @Html.TextBoxFor(e => e.Third_kind_name, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="TD_STYLE1">
+                        职位分类
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Human_major_kind_name, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                    </td>
+                    <td class="TD_STYLE1">
+                        职位名称
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Hunma_major_name, new { @class = "INPUT_STYLE2", @readonly = "readonly" })
+                    </td>
+                    <td class="TD_STYLE1">
+                        职称
+                    </td>
+                    <td colspan="2" class="TD_STYLE2">
+                        @Html.DropDownListFor(e => e.Human_pro_designation, ViewBag.List_Key12 as IEnumerable<SelectListItem>, "请选择", new { @class = "SELECT_STYLE1" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="TD_STYLE1">
+                        姓名
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Human_name, new { @class = "INPUT_STYLE2" })
+                        @*<input type="text" id="humanName" name="humanFile.humanName" value="谢鹏"
+                        class="INPUT_STYLE2">*@
+                    </td>
+                    <td class="TD_STYLE1">
+                        性别
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.DropDownListFor(e => e.Human_sex, new SelectList(new[] { new { value = "男", text = "男" }, new { value = "女", text = "女" } }, "value", "text", 0), new { @class = "SELECT_STYLE1" })
+                    </td>
+                    <td class="TD_STYLE1">
+                        EMAIL
+                    </td>
+                    <td colspan="2" class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Human_email, new { @class = "INPUT_STYLE2" })
+                        @*<input type="text" name="humanFile.humanEmail" value="569065574@qq.com"
+                        class="INPUT_STYLE2" id="humanEmail">*@
+                    </td>
+                </tr>
+                <tr>
+                    <td class="TD_STYLE1">
+                        电话
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Human_telephone, new { @class = "INPUT_STYLE2" })
+                        @*<input type="text" name="humanFile.humanTelephone" value="0731-1111111"
+                        class="INPUT_STYLE2" id="humanTelephone">*@
+                    </td>
+                    <td class="TD_STYLE1">
+                        QQ
+                    </td>
+                    <td class="TD_STYLE2">
+                        @*<input type="text" name="humanFile.humanQq" value="569065574"
+                        class="INPUT_STYLE2" id="humanQq">*@
+                        @Html.TextBoxFor(e => e.Human_qq, new { @class = "INPUT_STYLE2" })
+                    </td>
+                    <td class="TD_STYLE1">
+                        手机
+                    </td>
+                    <td colspan="2" class="TD_STYLE2">
+                        @*<input type="text" name="humanFile.humanMobilephone" id="humanMobilephone"
+                        value="13838383838" class="INPUT_STYLE2">*@
+                        @Html.TextBoxFor(e => e.Human_mobilephone, new { @class = "INPUT_STYLE2" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="TD_STYLE1">
+                        住址
+                    </td>
+                    <td colspan="3" class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Human_address, new { @class = "INPUT_STYLE2" })
+                        @*<input type="text" name="humanFile.humanAddress" value="湖南"
+                        class="INPUT_STYLE2">*@
+                    </td>
+                    <td class="TD_STYLE1">
+                        邮编
+                    </td>
+                    <td colspan="2" class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Human_postcode, new { @class = "INPUT_STYLE2" })
+                        @*<input type="text" name="humanFile.humanPostcode" value="421800"
+                        class="INPUT_STYLE2">*@
+                    </td>
+                </tr>
+                <tr>
+                    <td class="TD_STYLE1">
+                        国籍
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.DropDownListFor(e => e.Human_nationality, ViewBag.List_Key3 as IEnumerable<SelectListItem>, "请选择", new { @class = "SELECT_STYLE1" })
+                    </td>
+                    <td class="TD_STYLE1">
+                        出生地
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.TextBoxFor(e => e.Human_birthplace, new { @class = "INPUT_STYLE2" })
+                        @*<input type="text" name="humanFile.humanBirthplace" value="湖南"
+                        class="INPUT_STYLE2">*@
+                    </td>
+                    <td class="TD_STYLE1">
+                        生日
+                    </td>
+                    <td width="13%" class="TD_STYLE2">
+                        @*<input type="text" name="humanFile.humanBirthday" readonly="readonly"
+                        value="1993-12-08" class="INPUT_STYLE2" id="birthday">*@
+                        @Html.TextBoxFor(e => e.Human_birthday, new { @class = "INPUT_STYLE2" })
+                    </td>
+                    <td width="10%" class="TD_STYLE1">
+                        民族
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.DropDownListFor(e => e.Human_race, ViewBag.List_Key4 as IEnumerable<SelectListItem>, "请选择", new { @class = "SELECT_STYLE1" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="TD_STYLE1">
+                        宗教信仰
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.DropDownListFor(e => e.Human_religion, ViewBag.List_Key5 as IEnumerable<SelectListItem>, "请选择", new { @class = "SELECT_STYLE1" })
+                    </td>
+                    <td class="TD_STYLE1">
+                        政治面貌
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.DropDownListFor(e => e.Human_party, ViewBag.List_Key6 as IEnumerable<SelectListItem>, "请选择", new { @class = "SELECT_STYLE1" })
+                    </td>
+                    <td class="TD_STYLE1">
+                        身份证号码
+                    </td>
+                    <td class="TD_STYLE2">
+                        @*<input type="text" name="humanFile.humanIdCard" id="humanIdCard"
+                        value="111111111111111111" class="INPUT_STYLE2">*@
+                        @Html.TextBoxFor(e => e.Human_id_card, new { @class = "INPUT_STYLE2" })
+                    </td>
+                    <td class="TD_STYLE1">
+                        社会保障号码
+                    </td>
+                    <td class="TD_STYLE2">
+                        @*<input type="text" name="humanFile.humanSocietySecurityId" value="4353423"
+                        class="INPUT_STYLE2">*@
+                        @Html.TextBoxFor(e => e.Human_society_security_id, new { @class = "INPUT_STYLE2" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="TD_STYLE1">
+                        年龄
+                    </td>
+                    <td class="TD_STYLE2">
+                        @*<input type="text" name="humanFile.humanAge" value="19"
+                        class="INPUT_STYLE2" id="humanAge">*@
+                        @Html.TextBoxFor(e => e.Human_age, new { @class = "INPUT_STYLE2" })
+                    </td>
+                    <td class="TD_STYLE1">
+                        学历
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.DropDownListFor(e => e.Human_educated_degree, ViewBag.List_Key8 as IEnumerable<SelectListItem>, "请选择", new { @class = "SELECT_STYLE1" })
+                    </td>
+                    <td class="TD_STYLE1">
+                        教育年限
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.DropDownListFor(e => e.Human_educated_years, ViewBag.List_Key7 as IEnumerable<SelectListItem>, "请选择", new { @class = "SELECT_STYLE1" })
+                    </td>
+                    <td class="TD_STYLE1">
+                        学历专业
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.DropDownListFor(e => e.Human_educated_major, ViewBag.List_Key9 as IEnumerable<SelectListItem>, "请选择", new { @class = "SELECT_STYLE1" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="TD_STYLE1">
+                        薪酬标准
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.DropDownListFor(e => e.Salary_standard_name, ViewBag.List_Key16 as IEnumerable<SelectListItem>, "请选择", new { @class = "SELECT_STYLE1" })
+                    </td>
+                    <td class="TD_STYLE1">
+                        开户行
+                    </td>
+                    <td class="TD_STYLE2">
+                        @*<input type="text" name="humanFile.humanBank" value="建设银行"
+                        class="INPUT_STYLE2">*@
+                        @Html.TextBoxFor(e => e.Human_bank, new { @class = "INPUT_STYLE2" })
+                    </td>
+                    <td class="TD_STYLE1">
+                        帐号
+                    </td>
+                    <td class="TD_STYLE2">
+                        @*<input type="text" name="humanFile.humanAccount"
+                        value="6227002951240189402" class="INPUT_STYLE2">*@
+                        @Html.TextBoxFor(e => e.Human_account, new { @class = "INPUT_STYLE2" })
+                    </td>
+                    <td class="TD_STYLE1">
+                        复核人
+                    </td>
+                    <td class="TD_STYLE2">
+                        @*<input type="text" name="humanFile.checker" value="谢鹏"
+                        readonly="readonly" class="INPUT_STYLE2">*@
+                        @Html.TextBoxFor(e => e.Checker, new { @class = "INPUT_STYLE2" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="TD_STYLE1">
+                        复核时间
+                    </td>
+                    <td class="TD_STYLE2">
+                        @*<input type="text" name="humanFile.checkTime"
+                        id="create_time" readonly="readonly"
+                        class="INPUT_STYLE2">*@
+                        @Html.TextBoxFor(e => e.Check_time, new { @class = "INPUT_STYLE2", @id = "create_time" })
+                    </td>
+                    <td class="TD_STYLE1">
+                        特长
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.DropDownListFor(e => e.Human_speciality, ViewBag.List_Key11 as IEnumerable<SelectListItem>, "请选择", new { @class = "SELECT_STYLE1" })
+                    </td>
+                    <td class="TD_STYLE1">
+                        爱好
+                    </td>
+                    <td class="TD_STYLE2">
+                        @Html.DropDownListFor(e => e.Human_hobby, ViewBag.List_Key10 as IEnumerable<SelectListItem>, "请选择", new { @class = "SELECT_STYLE1" })
+                    </td>
+                    <td class="TD_STYLE1">
+                        &nbsp;
+                    </td>
+                    <td class="TD_STYLE2">
+                        &nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td class="TD_STYLE1">
+                        档案附件
+                    </td>
+                    <td colspan="7" class="TD_STYLE2">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="TD_STYLE1">
+                        个人履历
+                    </td>
+                    <td colspan="7" class="TD_STYLE2">
+                        @*<textarea name="humanFile.humanHistroyRecords" rows="4"
+                        class="TEXTAREA_STYLE1">上岛咖啡</textarea>*@
+                        @Html.TextAreaFor(e => e.Human_histroy_records, new { @class = "INPUT_STYLE2" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="TD_STYLE1">
+                        家庭关系信息
+                    </td>
+                    <td colspan="7" class="TD_STYLE2">
+                        @*<textarea name="humanFile.humanFamilyMembership" rows="4"
+                        class="TEXTAREA_STYLE1">你猜</textarea>*@
+                        @Html.TextBoxFor(e => e.Human_family_membership, new { @class = "INPUT_STYLE2" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="TD_STYLE1">
+                        备注
+                    </td>
+                    <td colspan="7" class="TD_STYLE2">
+                        @*<textarea name="humanFile.remark" rows="4" class="TEXTAREA_STYLE1"></textarea>*@
+                        @Html.TextBoxFor(e => e.Remark, new { @class = "INPUT_STYLE2" })
+                    </td>
+                </tr>
+            </table>
+        }
+    </div>
+    <script type="text/javascript">
+        var vue = new Vue({
+            el: "#app",
+            data: {
+                imageUrl: '',
+                tpUrl: ''
+            },
+            methods: {
+                //上传方法全局文件
+                handleAvatarSuccess(res, file) {//上传成功的钩子,获取后端的返回结果
+                    this.imageUrl = URL.createObjectURL(file.raw);//获取上传成功之后的图片路径
+                    this.tpUrl = res;
+                    $("#tp").val(res);
+                },
+                beforeAvatarUpload(file) {//文件上传前被调用,对文件进行验证
+                    const isJPG = file.type === 'image/jpeg';
+                    const isLt2M = file.size / 1024 / 1024 < 2;
+
+                    if (!isJPG) {
+                        this.$message.error('上传头像图片只能是 JPG 格式!');
+                    }
+                    if (!isLt2M) {
+                        this.$message.error('上传头像图片大小不能超过 2MB!');
+                    }
+                    return isJPG && isLt2M;
+                },
+                handlePreview(file) {
+
+                },
+                handleRemove(file, fileList) {
+                    //移除列表文件
+
+                    console.log(file);
+                    let index = this.fileNameList.index0f(file.name);
+                    console.log(index);
+                    this.fileNameList.splice(index, 1);
+                    console.log(" 删除后的", this.fileNameList);
+                }
+
+
+            }
+            , mounted: function () {
+
+            }
+        })
+    </script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Model
+{
+    public class config_file_first_kind
+    {
+        //[ffk_id], [first_kind_id], [first_kind_name], [first_kind_salary_id], [first_kind_sale_id]
+        public int ffk_id { get; set; }
+
+       
+
+        public string first_kind_id { get; set; }
+
+       
+        public string first_kind_name { get; set; }
+
+       
+        public string first_kind_salary_id { get; set; }
+
+       
+        public string first_kind_sale_id { get; set; }
+
+        public List<config_file_second_kind> children { get; set; }
+
+
+    }
+}

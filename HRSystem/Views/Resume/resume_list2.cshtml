@@ -1,0 +1,166 @@
+﻿
+@{
+    Layout = null;
+}
+@using Model
+@{Engage_resume eng = ViewData.Model; }
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>My JSP 'resume-list.jsp' starting page</title>
+    <link rel="stylesheet"
+          href="../../../css/table.css" type="text/css">
+    <link rel="stylesheet"
+          href="../../../css/cwcalendar.css" type="text/css">
+    <script type="text/javascript"
+            src="../../../javascript/comm/comm.js">
+    </script>
+    <script type="text/javascript"
+            src="../../../javascript/comm/list.js">
+    </script>
+    <script type="text/javascript"
+            src="../../../javascript/calendar-ch.js">
+    </script>
+    <script type="text/javascript"
+            src="../../../javascript/jquery-1.7.2.js">
+    </script>
+    <script type="text/javascript"
+            src="../../../javascript/locate.js">
+    </script>
+    <script type="text/javascript"
+            src="../../../javascript/select.js">
+    </script>
+    <script type="text/javascript" src="../../javascript/jquery-1.7.2.js"></script>
+    <script src="~/Scripts/vue/dist/vue.js"></script>
+    <script src="~/Scripts/element-ui/lib/index.js"></script>
+    <link href="~/Scripts/element-ui/lib/theme-chalk/index.css" rel="stylesheet" />
+    <script src="~/Scripts/axios/dist/axios.js"></script>
+</head>
+<body>
+    <div id="app">
+        <input type="hidden" name="utilBean.currPage" id="page" />
+        <table width="100%">
+            <tr>
+                <td>
+                    <font color="black">
+                        您正在做的业务是：人力资源--招聘管理--简历管理--简历筛选--简历筛选列表
+                    </font>
+                </td>
+            </tr>
+            <tr>
+                <td align="right">
+                    <input type="button" value="返回" class="BUTTON_STYLE1" onclick="history.back();">
+                </td>
+            </tr>
+        </table>
+        <el-table :data="list"
+                  border
+                  height="260"
+                  style="width: 100%; ">
+            <el-table-column prop="Res_id"
+                             label="档案编号"
+                             width="180">
+                <template slot-scope="scope">
+                    <a href="javascript:void(0)" style="color: #0000EE;" v-on:click="bh(scope.row.Res_id)">{{scope.row.Res_id}}</a>
+                </template>
+            </el-table-column>
+            <el-table-column prop="Human_name"
+                             label="姓名"
+                             width="180">
+            </el-table-column>
+            <el-table-column prop="Human_sex"
+                             label="性别"
+                             width="180">
+            </el-table-column>
+            <el-table-column prop="Human_major_kind_name"
+                             label="职位分类"
+                             width="180">
+            </el-table-column>
+            <el-table-column prop="Human_major_name"
+                             label="职位名称"
+                             width="180">
+            </el-table-column>
+            <el-table-column prop="Human_mobilephone"
+                             label="电话号码"
+                             width="180">
+            </el-table-column>
+            <el-table-column prop="check_status"
+                             label="复核状态"
+                             width="180">
+                <template slot-scope="scope">
+                    {{scope.row.check_status==0 ? "未复核":"已复核"}}
+                </template>
+            </el-table-column>
+            <el-table-column prop="Interview_status"
+                             label="面试状态"
+                             width="180">
+                <template slot-scope="scope">
+                    {{scope.row.Interview_status==0 ? "待面试":"已面试"}}
+                </template>
+            </el-table-column>
+           
+        </el-table>
+        <el-pagination v-on:size-change="handleSizeChange"
+                       v-on:current-change="handleCurrentChange"
+                       :currentpage="currentPage"
+                       :page-sizes="[3, 6, 9, 12]"
+                       :page-size="pageSize"
+                       layout="total, sizes, prev, pager, next, jumper"
+                       :total="rows">
+        </el-pagination>
+    </div>
+    <script type="text/javascript">
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                list: [],
+                currentPage: 1,
+                pageSize: 3,
+                rows: 1,
+                eng: {},
+                a:1
+            },
+            methods: {
+                fill() {
+                    this.eng =@Html.Raw(Json.Encode(eng))
+                        console.log(this.eng);
+                    axios.get('/Resume/resume_choose1', {
+                        params: {
+                            major_kind_name: this.eng.Major_kind_name,
+                            major_name: this.eng.Major_name,
+                            remark: this.eng.Remark,
+                            begintime: this.eng.begintime,
+                            endtime: this.eng.endtime,
+                            CurrentPage: this.currentPage,
+                            PageSize: this.pageSize,
+                            a:this.a
+                        }
+                    }).then(res => {
+                        console.log(res);
+                        this.list = res.data.List;
+                        this.rows = res.data.Rows;
+                    })
+                        .catch(err => {
+                            console.log(err);
+                        })
+                }, handleSizeChange: function (size) {
+                    this.pageSize = size;
+                    this.currentPage = 1;
+                    this.fill();
+                },
+                handleCurrentChange: function (cpage) {
+                    this.currentPage = cpage;
+                    this.fill();
+                },
+                update(row){
+                    location.href ='/Resume/resume_details?id='+row.Res_id
+                }
+            },
+            mounted: function () {
+                this.fill()
+            }
+
+        })
+    </script>
+</body>
+</html>

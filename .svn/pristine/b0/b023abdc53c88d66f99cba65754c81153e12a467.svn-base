@@ -1,0 +1,53 @@
+﻿using DAO;
+using Model;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Web;
+using System.Web.Mvc;
+
+namespace HRSystem.Controllers
+{
+    public class LoginController : Controller
+    {
+
+        Users_XJ_DAO uDAO = new Users_XJ_DAO();
+        // GET: Login
+        public ActionResult Login_Index()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        /// <summary>
+        /// 登录
+        /// </summary>
+        /// <param name="users"></param>
+        /// <returns></returns>
+        public async Task<ActionResult> Users_Login(Users_XJ users)
+        {
+            if (ModelState.IsValid) //后台验证
+            {
+                Users_XJ userss= await uDAO.Users_Login(users);
+                if (userss !=null)
+                {
+                    //存值
+                    TempData["users"]=userss;
+                    return Content("<script>alert('登录成功！');location.href='/Main/Index'</script>");
+
+                }
+                else
+                {
+                    return Content("<script>alert('登录失败！');location.href='/Login/Login_Index'</script>");
+                    //return RedirectToAction("TreaUpdate",new { id = trea.id});
+                }
+            }
+            else
+            {
+                return Content("<script>alert('不能为空！');location.href='/Login/Login_Index'</script>");
+
+            }
+        }
+    }
+}

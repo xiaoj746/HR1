@@ -1,0 +1,79 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-trasitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="../../css/table.css"
+          type="text/css"></link>
+    <script src="~/Scripts/vue/dist/vue.js"></script>
+    <script src="~/Scripts/element-ui/lib/index.js"></script>
+    <link href="~/Scripts/element-ui/lib/theme-chalk/index.css" rel="stylesheet" />
+    <script src="~/Scripts/axios/dist/axios.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <form action="" method="post">
+            <input type="hidden" name="page.startPage" value="0">
+            <table width="100%">
+                <tr>
+                    <td>
+                        <font color="black">您正在做的业务是：人力资源--薪酬发放管理--薪酬发放登记</font>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">
+                        <input type="button" value="确 定" class="BUTTON_STYLE1" v-on:click="btn_qd()">
+                    </td>
+                </tr>
+            </table>
+            <table width="100%" border="1" cellpadding=0 cellspacing=1
+                   bordercolorlight=#848284 bordercolordark=#eeeeee
+                   class="TABLE_STYLE1">
+                <tr>
+                    <td width="27%" class="TD_STYLE1">
+                        薪酬发放方式
+                    </td>
+                    <td width="22%" class="TD_STYLE1">
+                        <select name="submitType" class="INPUT_STYLE2" v-model="submitType">
+                            <option value="1">一级机构发放方式</option>
+                            <option value="2">二级机构发放方式</option>
+                            <option value="3">三级机构发放方式</option>
+                        </select>
+                    </td>
+                    <td width="60%" class="TD_STYLE1"></td>
+            </table>
+        </form>
+
+    </div>
+    <script type="text/javascript">
+        var str = "";
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                submitType: 1,
+            },
+            methods: {
+                btn_qd() {
+                    var t = this;
+                    if (this.submitType == 1) {
+                        str += " [second_kind_name] =''  and [check_status]= 1";
+                    } else if (this.submitType == 2) {
+                        str += " [third_kind_name] =''   and [second_kind_name] !=''    and [check_status] = 1"
+                    }
+                    else if (this.submitType == 3) {
+                        str = " [third_kind_name] !=''  and [check_status] = 1"
+                    }
+                    console.log(str);
+                   location.href = "/salaryGrant/register_list?str=" + str;
+                },
+            }
+        })
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,619 @@
+﻿
+@{
+    Layout = null;
+}
+@using Model;
+@{human_file_XJ hf = ViewBag.s; }
+@{IEnumerable<Config_major_cader> cm = ViewBag.y; }
+@{IEnumerable<config_file_first_kind_cader> cffk = ViewBag.u; }
+@{IEnumerable<salary_standard> ss = ViewBag.o; }
+@{ Users_XJ user = ViewBag.us; }
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-trasitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet"
+          href="../../css/table.css" type="text/css"></link>
+    <script type="text/javascript" src="../../javascript/jquery-1.7.2.js"></script>
+    <script src="~/Scripts/vue/dist/vue.js"></script>
+    <script src="~/Scripts/element-ui/lib/index.js"></script>
+    <link href="~/Scripts/element-ui/lib/theme-chalk/index.css" rel="stylesheet" />
+    <script src="~/Scripts/axios/dist/axios.js"></script>
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+</head>
+
+<body>
+    <div id="app">
+
+        <table width="100%">
+            <tr>
+                <td>
+                    <font color="#0000CC">您正在做的业务是:人力资源--调动管理--调动登记</font>
+                </td>
+            </tr>
+
+            <tr>
+                <td align="right">
+                    <input type="button" value="提交" class="BUTTON_STYLE1"
+                           v-on:click="mySubmit()">
+                    <input type="button" class="BUTTON_STYLE1"
+                           onclick="javascript:window.history.back();" value="返回">
+                </td>
+            </tr>
+        </table>
+        <table width="100%" border="1" cellpadding=0 cellspacing=1
+               bordercolorlight=#848284 bordercolordark=#eeeeee
+               class="TABLE_STYLE1">
+            <tr height="21">
+                <td class="TD_STYLE1" width="8%">
+                    档案编号
+                </td>
+                <td class="TD_STYLE2" width="10%">
+                    @*<el-input  name="majorChange.humanId" readonly="readonly"
+                              v-model="hf.humanId" class="INPUT_STYLE2"></el-input>*@
+                    <input type="text" name="majorChange.humanId" readonly="readonly"
+                           v-model="hf.humanId"
+                           value="bt201211190619440428" class="INPUT_STYLE2">
+
+                </td>
+                <td class="TD_STYLE1" width="8%">
+                    姓名
+                </td>
+                <td class="TD_STYLE2" width="10%">
+                    @*<el-input name="majorChange.humanName" readonly="readonly"
+                              v-model="hf.humanName" class="INPUT_STYLE2"></el-input>*@
+                    <input type="text" name="majorChange.humanName"
+                           v-model="hf.humanName"
+                           value="杨阳" readonly="readonly"
+                           class="INPUT_STYLE2">
+                </td>
+                <td class="TD_STYLE1" width="8%">
+                </td>
+                <td class="TD_STYLE2" width="10%">
+                </td>
+                <td class="TD_STYLE1" width="8%">
+                </td>
+                <td class="TD_STYLE2" width="10%">
+                </td>
+            </tr>
+            <tr>
+
+                <td class="TD_STYLE1" width="8%">
+                    原一级机构
+                </td>
+                <td class="TD_STYLE2">
+                    <input type="text" name="majorChange.firstKindName"
+                           v-model="hf.firstKindName"
+                           value="Ⅰ级结构" readonly="readonly" value=""
+                           class="INPUT_STYLE2">
+                    @*<el-input name="majorChange.firstKindName" readonly="readonly"
+                              v-model="hf.firstKindName" class="INPUT_STYLE2"></el-input>*@
+                    <input type="hidden" name="majorChange.firstKindId" value="1353318953319" v-model="hf.firstKindId">
+                </td>
+                <td class="TD_STYLE1" width="8%">
+                    原二级机构
+                </td>
+                <td class="TD_STYLE2" width="10%">
+                    <input type="text" name="majorChange.secondKindName"
+                           v-model="hf.secondKindName"
+                           value="Ⅱ级结构3" readonly="readonly" 
+                           class="INPUT_STYLE2">
+                    @*<el-input name="majorChange.secondKindName" readonly="readonly"
+                              v-model="hf.secondKindName" class="INPUT_STYLE2"></el-input>*@
+                    <input type="hidden" name="majorChange.secondKindId" value="1353318979558" v-model="hf.secondKindId">
+                </td>
+                <td class="TD_STYLE1" width="8%">
+                    原三级机构
+                </td>
+                <td class="TD_STYLE2" width="10%">
+                    <input type="text" name="majorChange.thirdKindName"
+                           value="" readonly="readonly" value="" v-model="hf.thirdKindName"
+                           class="INPUT_STYLE2">
+                    @*<el-input name="majorChange.thirdKindName" readonly="readonly"
+                              v-model="hf.thirdKindName" class="INPUT_STYLE2"></el-input>*@
+                    <input type="hidden" name="majorChange.thirdKindId" value="1353319077370" v-model="hf.thirdKindId">
+                </td>
+                <td class="TD_STYLE1" width="8%">
+                </td>
+                <td class="TD_STYLE2" width="10%">
+                </td>
+            </tr>
+
+            <tr>
+                <td class="TD_STYLE1">
+                    原职位分类
+                </td>
+                <td class="TD_STYLE2">
+                    <input type="text" name="majorChange.majorKindName"
+                           value="软件开发" readonly="readonly" v-model="hf.majorKindName"
+                           value="" class="INPUT_STYLE2">
+                    @*<el-input name="majorChange.majorKindName" readonly="readonly"
+                              v-model="hf.majorKindName" class="INPUT_STYLE2"></el-input>*@
+                    <input type="hidden" name="majorChange.majorKindId" value="02" v-model="hf.majorKindId">
+                </td>
+                <td class="TD_STYLE1" width="12%">
+                    原职位名称
+                </td>
+                <td class="TD_STYLE2">
+                    <input type="text" name="majorChange.majorName" v-model="hf.majorName"
+                           value="程序员" readonly="readonly"
+                           class="INPUT_STYLE2">
+                    @*<el-input name="majorChange.majorName" readonly="readonly"
+                              v-model="hf.majorName" class="INPUT_STYLE2"></el-input>*@
+
+                    <input type="hidden" name="majorChange.majorId" value="02" v-model="hf.majorId">
+                </td>
+                <td class="TD_STYLE1">
+                    原薪酬标准
+                </td>
+                <td class="TD_STYLE2">
+                    <input type="text" name="majorChange.salaryStandardName"
+                           value="经理级别" v-model="hf.salaryStandardName"
+                           readonly="readonly" class="INPUT_STYLE2">
+                    @*<el-input name="majorChange.salaryStandardName" readonly="readonly"
+                              v-model="hf.salaryStandardName" class="INPUT_STYLE2"></el-input>*@
+
+                    <input type="hidden" name="majorChange.salaryStandardId" value="1353320082662" v-model="hf.salaryStandardId">
+                </td>
+                <td class="TD_STYLE1">
+                    原薪酬总额
+                </td>
+                <td class="TD_STYLE2">
+                    <input type="text" name="majorChange.salarySum" v-model="hf.salarySum"
+                           value="" readonly="readonly"
+                           class="INPUT_STYLE2">
+                    @*<el-input name="majorChange.salarySum" readonly="readonly"
+                              v-model="hf.salarySum" class="INPUT_STYLE2"></el-input>*@
+                </td>
+            </tr>
+            <tr>
+                <td class="TD_STYLE1">
+                    新I、II、III级机构名称
+                </td>
+                <td class="TD_STYLE2">
+                    <el-cascader :options="cffk"
+                                 ref="cascaderMallCatergory"
+                                 v-model="newFirstKindName"
+                                 :props="{ checkStrictly: true }"
+                                 clearable></el-cascader>
+
+
+                    <input type="hidden" name="majorChange.newFirstKindName" id="newFirstKindName">
+                </td>
+                <td class="TD_STYLE1" width="10%">
+                </td>
+                <td class="TD_STYLE1" width="10%">
+                </td>
+                <td class="TD_STYLE1" width="10%">
+                </td>
+                <td class="TD_STYLE1" width="10%">
+                </td>
+                <td class="TD_STYLE1" width="10%">
+                </td>
+                <td class="TD_STYLE2" width="10%">
+                </td>
+            </tr>
+            <tr>
+                <td class="TD_STYLE1">
+                    新职位分类和职位名称
+                </td>
+                <td class="TD_STYLE2">
+                    <el-cascader :options="cm"
+                                 ref="cascaderMallCatergory1"
+                                 v-model="newMajorKindName"
+                                 :props="{ checkStrictly: true }"
+                                 clearable></el-cascader>
+                    <input type="hidden" name="majorChange.newMajorKindName" id="newMajorKindName">
+
+                </td>
+
+                <td class="TD_STYLE1">
+                    新薪酬标准
+                </td>
+                <td class="TD_STYLE2">
+                    <select v-on:change="selectHandler" v-model="newSalaryStandardName" style="width:160px" name="majorChange.newSalaryStandardId" id="newSalaryStandardId" size="1" class="SELECT_STYLE2">
+                <option value="" selected>-----请选择-----</option>
+                <option :value="item.standard_id" v-for="(item,index) in ss" :id="'sName'+(index+1)">{{item.standard_name}}</option>
+            </select>
+
+                    @*<el-select v-model="newSalaryStandardName" v-on:change="selectHandler" placeholder="请选择" style="width:160px" name="majorChange.newSalaryStandardId" id="newSalaryStandardId" class="SELECT_STYLE2">
+                        <el-option v-for="(item,index) in ss"
+                                   :label="item.standard_name"
+                                   :value="item.standard_id"
+                                   :id="'sName'+(index+1)">
+                        </el-option>
+                    </el-select>*@
+                    <input type="hidden" name="majorChange.newSalaryStandardName" id="newSalaryStandardName">
+
+                </td>
+                <td class="TD_STYLE1">
+                    新薪酬总额
+                </td>
+                <td class="TD_STYLE2">
+                    @*<el-input name="majorChange.newSalarySum" id="newSalarySum" readonly="readonly"
+                              v-model="newSalarySum" class="INPUT_STYLE2"></el-input>*@
+
+                    <input type="text" name="majorChange.newSalarySum" id="newSalarySum" readonly="readonly" v-model="newSalarySum"
+            value="0.00" class="INPUT_STYLE2">
+                </td>
+                <td class="TD_STYLE1" width="10%">
+                </td>
+                <td class="TD_STYLE2" width="10%">
+                </td>
+            </tr>
+
+            <tr>
+                <td class="TD_STYLE1">
+                    登记人
+                </td>
+                <td class="TD_STYLE2">
+                    <input type="text" name="majorChange.register" readonly="readonly" v-model="mc.register"
+                           class="INPUT_STYLE2">
+
+                    @*<el-input name="majorChange.register"  readonly="readonly"
+                              v-model="mc.register" class="INPUT_STYLE2"></el-input>*@
+                </td>
+                <td class="TD_STYLE1">
+                    登记时间
+                </td>
+                <td class="TD_STYLE2">
+                    <input type="text" name="majorChange.registTime" readonly="readonly"
+                           id="Tdate" class="INPUT_STYLE2">
+
+                    @*<el-input name="majorChange.registTime" readonly="readonly"  id="Tdate" 
+                            class="INPUT_STYLE2"></el-input>*@
+
+                </td>
+                <td class="TD_STYLE1">
+                </td>
+                <td class="TD_STYLE2">
+                </td>
+                <td class="TD_STYLE1">
+                </td>
+                <td class="TD_STYLE2">
+                </td>
+            </tr>
+            <tr>
+                <td class="TD_STYLE1">
+                    调动原因
+                </td>
+                <td colspan="7" class="TD_STYLE2">
+                    @*<el-input type="textarea"
+                              :rows="6"
+                              placeholder="请输入内容"
+                              name="majorChange.changeReason"
+                              class="TEXTAREA_STYLE1"
+                              v-model="changeReason">
+                    </el-input>*@
+                    <textarea name="majorChange.changeReason" rows="6" class="TEXTAREA_STYLE1" v-model="changeReason"></textarea>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+    <script type="text/javascript">
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                cm: [],
+                cffk: [],
+                ss: [],
+                hf: {
+                    humanId: "",
+                    humanName: "",
+                    firstKindName: "",
+                    firstKindId: "",
+                    secondKindName: "",
+                    secondKindId: "",
+                    thirdKindName: "",
+                    thirdKindId: "",
+                    majorKindName: "",
+                    majorKindId: "",
+                    majorName: "",
+                    majorId: "",
+                    salaryStandardName: "",
+                    salaryStandardId: "",
+                    salarySum: "",
+                },
+                mc: {
+                    first_kind_id:"",
+                    first_kind_name:"",
+                    second_kind_id:"",
+                    second_kind_name:"",
+                    third_kind_id:"",
+                    third_kind_name:"",
+                    major_kind_id:"",
+                    major_kind_name:"",
+                    major_id:"",
+                    major_name:"",
+                    new_first_kind_id:"",
+                    new_first_kind_name:"",
+                    new_second_kind_id:"",
+                    new_second_kind_name:"",
+                    new_third_kind_id:"",
+                    new_third_kind_name:"",
+                    new_major_kind_id:"",
+                    new_major_kind_name:"",
+                    new_major_id:"",
+                    new_major_name:"",
+                    human_id:"",
+                    human_name:"",
+                    salary_standard_id:"",
+                    salary_standard_name:"",
+                    salary_sum:"",
+                    salary_standard_name: "",
+                    salary_sum:"",
+                    new_salary_standard_id:"",
+                    new_salary_standard_name:"",
+                    new_salary_sum:"",
+                    change_reason:"",
+                    register:"",
+                },
+                newFirstKindName:"",
+                newMajorKindName: "",
+                newSalaryStandardName: "",
+                newSalarySum: "",
+                register: "better_admin",
+                changeReason:"",
+            },
+            methods: {
+                fill: function () {
+                    this.mc.register =@Html.Raw(Json.Encode(user.u_name));   //用户名
+                    this.hf.humanId=@Html.Raw(Json.Encode(hf.human_id));
+                    this.hf.humanName =@Html.Raw(Json.Encode(hf.human_name));
+                    this.hf.firstKindName =@Html.Raw(Json.Encode(hf.first_kind_name));
+                    this.hf.firstKindId =@Html.Raw(Json.Encode(hf.first_kind_id));
+                    this.hf.secondKindName =@Html.Raw(Json.Encode(hf.second_kind_name));
+                    this.hf.secondKindId =@Html.Raw(Json.Encode(hf.second_kind_id));
+                    this.hf.thirdKindName =@Html.Raw(Json.Encode(hf.third_kind_name));
+                    this.hf.thirdKindId =@Html.Raw(Json.Encode(hf.third_kind_id));
+                    this.hf.majorKindName =@Html.Raw(Json.Encode(hf.human_major_kind_name));
+                    this.hf.majorKindId =@Html.Raw(Json.Encode(hf.human_major_kind_id));
+                    this.hf.majorName =@Html.Raw(Json.Encode(hf.hunma_major_name));
+                    this.hf.majorId =@Html.Raw(Json.Encode(hf.human_major_id));
+                    this.hf.salaryStandardName =@Html.Raw(Json.Encode(hf.salary_standard_name));
+                    this.hf.salaryStandardId =@Html.Raw(Json.Encode(hf.salary_standard_id));
+                    this.hf.salarySum =@Html.Raw(Json.Encode(hf.salary_sum));
+                    this.cm =@Html.Raw(Json.Encode(cm));   //职称级联
+                    this.cffk =@Html.Raw(Json.Encode(cffk));  //I、II、III、级架构级联
+                    this.ss =@Html.Raw(Json.Encode(ss));   //薪酬标准
+
+                },
+                selectHandler() {
+                    if (this.newSalaryStandardName =="") {
+                        this.newSalarySum = 0.00;
+                    }
+                    for (var i = 0; i < this.ss.length; i++) {
+                        if (this.newSalaryStandardName == this.ss[i].standard_id) {
+                            this.newSalarySum = this.ss[i].salary_sum
+                        }
+                    }
+
+                },
+                mySubmit() {
+                    this.mc.human_id = this.hf.humanId;
+                    this.mc.human_name = this.hf.humanName;
+                    this.mc.first_kind_name = this.hf.firstKindName;
+                    this.mc.first_kind_id = this.hf.firstKindId;
+                    this.mc.second_kind_name = this.hf.secondKindName;
+                    this.mc.second_kind_id = this.hf.secondKindId;
+                    this.mc.third_kind_name = this.hf.thirdKindName;
+                    this.mc.third_kind_id = this.hf.thirdKindId;
+                    this.mc.major_kind_name = this.hf.majorKindName;
+                    this.mc.major_kind_id = this.hf.majorKindId;
+                    this.mc.major_name = this.hf.majorName;
+                    this.mc.major_id = this.hf.majorId;
+                    this.mc.salary_standard_name = this.hf.salaryStandardName;
+                    this.mc.salary_standard_id = this.hf.salaryStandardId;
+                    this.mc.salary_sum = this.hf.salarySum;
+                    if (this.newFirstKindName.length!=0) {
+                        let arr = this.$refs['cascaderMallCatergory'].getCheckedNodes()[0].pathLabels
+                        this.mc.new_first_kind_id = this.newFirstKindName[0];
+                        this.mc.new_first_kind_name = arr[0];
+                        this.mc.new_second_kind_id = this.newFirstKindName[1];
+                        this.mc.new_second_kind_name = arr[1];
+                        this.mc.new_third_kind_id = this.newFirstKindName[2];
+                        this.mc.new_third_kind_name = arr[2];
+                    }
+                    if (this.newMajorKindName.length != 0) {
+                        let arr1 = this.$refs['cascaderMallCatergory1'].getCheckedNodes()[0].pathLabels
+                        this.mc.new_major_kind_id = this.newMajorKindName[0];
+                        this.mc.new_major_kind_name = arr1[0]
+                        this.mc.new_major_id = this.newMajorKindName[1];
+                        this.mc.new_major_name = arr1[1];
+                    }
+                    for (var i = 0; i < this.ss.length; i++) {
+                        if (this.newSalaryStandardName == this.ss[i].standard_id) {
+                            this.mc.new_salary_standard_name = document.getElementById("sName" + (i + 1)).innerText;
+                        }
+                    }
+                    this.mc.new_salary_standard_id = this.newSalaryStandardName;
+                    this.mc.new_salary_sum = this.newSalarySum;
+/*                    this.mc.register = this.register;*/
+                    this.mc.change_reason = this.changeReason;
+                    axios.post('/Transfer/MC_Add', {
+                        mc: this.mc
+                    })
+                        .then(res => {
+                            console.log(res);
+                            alert("登记成功！")
+                            location.href = "/Transfer/register_list?str="+"1=1";
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        })
+
+                }
+            },
+            mounted: function () {
+                this.fill();
+            },
+            // 时间格式
+            filters: {
+                ftime: function (value, spe) {
+                    if (value == '/Date(-62135596800000)/') {
+                        return '空'
+                    }
+                    var dt = new Date(parseInt(value.replace("/Date(", "").replace(")/", ""), 10));
+                    return dt.getFullYear() + "年" + (dt.getMonth() + 1) + "月" + dt.getDate() + " 日";
+                }
+            },
+        })
+    </script>
+
+    <script type="text/javascript">
+        $(function () {
+            //var standardid = $('#newSalaryStandardId');
+            //var standardname = $('#newSalaryStandardName');
+            //var newSalarySum = $('#newSalarySum');
+            //standardid.change(function () {
+            //    standardname.val($('#newSalaryStandardId option:selected').html());
+            //    $.post('/HR_Fist/transfer/transferAction!findSalarySum.action', { 'majorChange.newSalaryStandardId': $('#newSalaryStandardId option:selected').val() },
+            //        function (data) {
+            //            newSalarySum.val(data);
+
+            //        }
+            //        , 'html');
+
+            //});
+            //var first = $("#firstKindId");
+            //var second = $("#secondKindId");
+            //var third = $("#thirdKindId");
+            //first.change(function () {
+            //    $("#newFirstKindName").val($('#firstKindId option:selected').html());
+            //    $.post('/HR_Fist/transfer/transferAction!findtwo.action', { 'configThird.firstKindId': $('#firstKindId option:selected').val() },
+            //        function (data) {
+
+            //            second.css("width", first.width());
+            //            second.empty();
+            //            second.append("<option value='0' >-----请选择-----</option>");
+            //            var items = $(data).find("item");
+            //            items.each(function (i) {
+            //                var id = $(items[i]).attr("id");
+            //                var name = $(items[i]).attr("name");
+            //                second.append("<option value='" + id + "'>" + name + "</option>");
+
+
+            //            });
+            //        }, 'xml');
+            //    third.val('0');
+
+            //});
+            //$('#newMajorId').change(function () { $("#newMajorName").val($('#newMajorId option:selected').html()); });
+            //var second = $('#newMajorKindId');
+            //var third = $('#newMajorId');
+            //second.change(function () {
+            //    $("#newMajorKindName").val($('#newMajorKindId option:selected').html());
+
+            //    $.post('/HR_Fist/transfer/transferAction!findMajor.action', { 'majorChange.newMajorKindId': $('#newMajorKindId option:selected').val() },
+            //        function (data) {
+            //            third.css("width", second.width());
+            //            third.empty();
+            //            third.append("<option value='0' >-----请选择-----</option>");
+            //            var items = $(data).find("item");
+            //            items.each(function (i) {
+            //                var id = $(items[i]).attr("id");
+            //                var name = $(items[i]).attr("name");
+            //                third.append("<option value='" + id + "'>" + name + "</option>");
+
+
+            //            });
+            //        }, 'xml');
+
+            //});
+            //var first = $("#firstKindId");
+            //var second = $("#secondKindId");
+            //var third = $("#thirdKindId");
+            //third.change(function () { $("#newThirdKindName").val($('#thirdKindId option:selected').html()); });
+            //second.change(function () {
+            //    $("#newSecondKindName").val($('#secondKindId option:selected').html());
+            //    $.post('/HR_Fist/transfer/transferAction!findthree.action', { 'configThird.firstKindId': $('#firstKindId option:selected').val(), 'configThird.secondKindId': $('#secondKindId option:selected').val() },
+            //        function (data) {
+            //            third.css("width", second.width());
+            //            third.empty();
+            //            third.append("<option value='0' >-----请选择-----</option>");
+            //            var items = $(data).find("item");
+            //            items.each(function (i) {
+            //                var id = $(items[i]).attr("id");
+            //                var name = $(items[i]).attr("name");
+            //                third.append("<option value='" + id + "'>" + name + "</option>");
+
+
+            //            });
+            //        }, 'xml');
+
+            //});
+        });
+        function mySubmit() {
+            if (document.getElementById("firstKindId").value == '0') {
+                alert("请选择新一级结构！");
+                return;
+            }
+            if (document.getElementById("newMajorKindId").value == '0') {
+                alert("请选择新职位分类！");
+                return;
+            }
+            if (document.getElementById("newMajorId").value == '0') {
+                alert("请选择新职位名称！");
+                return;
+            }
+            if (document.getElementById("newSalaryStandardId").value == '0') {
+                alert("请选择新薪酬标准！");
+                return;
+            }
+
+            document.forms[0].submit();
+
+        }
+
+        function time() {
+            var tdate = document.getElementById("Tdate");
+            var d = new Date();
+            var y = d.getFullYear();
+            var moth = d.getMonth() + 1;
+            var date = d.getDate();
+            var h = d.getHours();
+            var m = d.getMinutes();
+            var s = d.getSeconds();
+            var hh = 20 - 1 - h;
+            var mm = 60 - 1 - m;
+            var ss = 60 - s;
+            if (hh > 0) {
+                mm = mm + 60 * hh;
+            }
+            if (moth < 10) {
+                moth = "0" + moth;
+            }
+            if (date < 10) {
+                date = "0" + date;
+            }
+            if (h < 10) {
+                h = "0" + h;
+            }
+            if (m < 10) {
+                m = "0" + m;
+            }
+            if (s < 10) {
+                s = "0" + s;
+            }
+            if (mm < 10) {
+                mm = "0" + mm;
+            }
+            if (ss < 10) {
+                ss = "0" + ss;
+            }
+
+            tdate.value = y + "-" + moth + "-" + date + "- " + h + ":" + m + ":" + s;
+
+
+        }
+        window.onload = time;
+        var out = window.setInterval(time, 1000);
+    </script>
+
+
+</body>
+</html>
+
+
+

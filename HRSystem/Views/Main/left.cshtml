@@ -1,0 +1,486 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-trasitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>无标题文档</title>
+    <link rel="stylesheet"
+          href="../css/table.css" type="text/css" />
+
+    <link rel="stylesheet" href="../javascript/easyui/themes/default/easyui.css" />
+    <link rel="stylesheet" href="../javascript/easyui/themes/icon.css" />
+    <script type="text/javascript" src="../javascript/jquery-1.7.2.js"></script>
+    <script type="text/javascript" src="../javascript/jquery.easyui.min.js"></script>
+    <script src="~/Scripts/vue/dist/vue.js"></script>
+    <script src="~/Scripts/element-ui/lib/index.js"></script>
+    <link href="~/Scripts/element-ui/lib/theme-chalk/index.css" rel="stylesheet" />
+    <script src="~/Scripts/axios/dist/axios.js"></script>
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <style>
+        .img {
+            vertical-align: middle;
+            margin-right: 5px;
+            width: 24px;
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 7px;
+        }
+
+        .box {
+            width: 183PX;
+            height: 50px;
+            text-align: center;
+            background-color: #404043;
+            font-size: 14px;
+            padding-top: 26px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .logo {
+            vertical-align: middle;
+            margin-right: 4px;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            font-size: 1px;
+            margin-bottom: 3px;
+        }
+
+        .el-submenu__title {
+            color: white
+        }
+
+            .el-submenu__title:hover {
+                background-color: #535456;
+            }
+
+        .el-menu-item {
+            background-color: #363E4F;
+        }
+
+            .el-menu-item:hover {
+                background-color: #535456;
+            }
+        .el-submenu .el-menu-item {
+            min-width: 181px;
+        }
+        body {
+            background-color: #363E4F;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+
+        @*<el-aside width="200px" style="background-color: rgb(238, 241, 246)">
+            <el-menu :default-openeds="['0','1','2','3','4','5']">
+                <el-submenu v-for="(item, index) in this.listMain" :key="index" :index="index.toString()" style="background-color: rgb(63 62 62)">
+                    <template slot="title">
+                        <i><img :src="` /images/images/icon/${item.id}.png`" class="img" /></i>
+                        {{item.Name}}
+                    </template>
+                    <el-submenu v-for="(item1, index) in item.children" :key="index" v-if="item1.children.length!=0" :index="`item.index-${index+1}`" style="background-color: rgb(33 33 33);">
+                        <template slot="title">
+                            {{item1.Name}}
+                        </template>
+                        <el-menu-item v-for="(item2, index) in item1.children" :key="index" :index="`item.index-${item2.index}-${index+1}`">
+                            <a :href="item2.url" target="mainFrame" style="color:white;">{{item2.Name}}</a>
+                        </el-menu-item>
+
+                    </el-submenu>
+                    <el-submenu v-for="(item3, index) in item.children" :key="index" v-if="item3.children.length==0" :index="`item3.index-${index+1}`" style="background-color: rgb(33 33 33);">
+                        <template slot="title">
+                            <a :href="item3.url" target="mainFrame" style="color: white;">{{item3.Name}}</a>
+                        </template>
+
+                    </el-submenu>
+                </el-submenu>
+            </el-menu>
+        </el-aside>*@
+
+        <el-menu default-active="2"
+                 class="el-menu-vertical-demo"
+                 text-color="#fff"
+                 active-text-color="#fff"
+                 :default-openeds="['0','1','2','3','4','5']"
+               >
+            <el-submenu  :index="index.toString()" style="background-color: #495060 " v-for="(item, index) in this.listMain" :key="index">
+                <template slot="title">
+                    <i ><img :src="` /images/images/icon/${item.id}.png`" class="img" /></i>
+                    <span>{{item.Name}}</span>
+                </template>
+
+                <el-submenu :index="`${item.index}-`+(index+1)" v-for="(item1, index) in item.children" :key="index" v-if="item1.children.length!=0" style="background-color: #363E4F; ">
+                    <template slot="title">
+                        {{item1.Name}}
+                    </template>
+                    <el-menu-item :index="`${item.index}-`+(item1.index+1)" v-for="(item2, index) in item1.children" :key="index">
+                        <a :href="item2.url" target="mainFrame" style="color: white;">{{item2.Name}}</a>
+                    </el-menu-item>
+                </el-submenu>
+
+                <el-menu-item :index="`${item.index}-`+(item.index+1)" v-for="(item3, index) in item.children" :key="index" v-if="item3.children.length==0" style="background-color: #363E4F;">
+                    <template slot="title">
+                        <a :href="item3.url" target="mainFrame" style="color:white;">{{item3.Name}}</a>
+                    </template>
+                </el-menu-item>
+            </el-submenu>
+        </el-menu>
+
+
+
+
+        <ul id="tt1" class="easyui-tree" animate="true">
+            @*<li v-for="(item, index) in this.listMain" :key="index">
+                <span>{{item.Name}}</span>
+                <ul>
+                    <li state="closed" v-for="(item1, index) in item.children" :key="index" v-if="item1.children.length==0">
+                        <span>
+                            {{item1.Name}}
+                        </span>
+                        <ul>
+                            <li v-for="(item2, index) in item1.children" :key="index" v-if="item2.children.length != 0">
+                                <span>
+                                    <a href="/HF/Index_HF" target="mainFrame" style="color:black;">{{item2.Name}}</a>
+                                </span>
+                            </li>
+                            <li>
+                                <span>
+                                    <a href="recruit/position/position_change_update.html" target="mainFrame" style="color:black;">{{item2.Name}}</a>
+                                </span>
+                            </li>
+                            <li>
+                                <span>
+                                    <a href="recruit/position/position_release_search.html" target="mainFrame" style="color:black;">{{item2.Name}}</a>
+                                </span>
+                            </li>
+                        </ul>
+                    </li>
+                    <li state="closed">
+                        <span>
+                            简历管理
+                        </span>
+                        <ul>
+                            <li>
+                                <span>
+                                    <a href="recruit/resume/register.html" target="mainFrame" style="color:black;">简历登记</a>
+                                </span>
+                            </li>
+                            <li>
+                                <span>
+                                    <a href="recruit/resume/resume-choose.html" target="mainFrame" style="color:black;">简历筛选</a>
+                                </span>
+                            </li>
+                            <li>
+                                <span>
+                                    <a href="recruit/resume/valid-resume.html" target="mainFrame" style="color:black;">有效简历查询</a>
+                                </span>
+                            </li>
+                        </ul>
+                    </li>
+                    <li state="closed">
+                        <span>
+                            面试管理
+                        </span>
+                        <ul>
+                            <li>
+                                <span>
+                                    <a href="recruit/interview/interview-list.html" target="mainFrame" style="color:black;">面试结果登记</a>
+                                </span>
+                            </li>
+                            <li>
+                                <span>
+                                    <a href="recruit/interview/sift-list.html" target="mainFrame" style="color:black;">面试筛选</a>
+                                </span>
+                            </li>
+                        </ul>
+                    </li>
+                    <li state="closed">
+                        <span>
+                            录用管理
+                        </span>
+                        <ul>
+                            <li>
+                                <span>
+                                    <a href="recruit/employ/register_list.html" target="mainFrame" style="color:black;">录用申请</a>
+                                </span>
+                            </li>
+                            <li>
+                                <span>
+                                    <a href="recruit/employ/check_list.html" target="mainFrame" style="color:black;">录用审批</a>
+                                </span>
+                            </li>
+                            <li>
+                                <span>
+                                    <a href="recruit/employ/list.html" target="mainFrame" style="color:black;">录用查询</a>
+                                </span>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <span>人力资源档案管理</span>
+                <ul>
+                    <li>
+                        <span>
+                            <a href="humanResources/human_register.html" target="mainFrame" style="color:black;">人力资源档案登记</a>
+                        </span>
+                    </li>
+                    <li>
+                        <span>
+                            <a href="humanResources/check_list.html" target="mainFrame" style="color:black;">人力资源档案登记复核</a>
+                        </span>
+                    </li>
+                    <li>
+                        <span>
+                            <a href="humanResources/query_locate.html" target="mainFrame" style="color:black;">人力资源档案查询</a>
+                        </span>
+                    </li>
+                    <li>
+                        <span>
+                            <a href="humanResources/change_locate.html" target="mainFrame" style="color:black;">人力资源档案变更</a>
+                        </span>
+                    </li>
+                    <li state="closed">
+                        <span>
+                            人力资源档案删除管理
+                        </span>
+                        <ul>
+                            <li>
+                                <span>
+                                    <a href="humanResources/delete_locate.html" target="mainFrame" style="color:black;">人力资源档案删除</a>
+                                </span>
+                            </li>
+                            <li>
+                                <span>
+                                    <a href="humanResources/recovery_locate.html" target="mainFrame" style="color:black;">档案删除恢复</a>
+                                </span>
+                            </li>
+                            <li>
+                                <span>
+                                    <a href="humanResources/delete_forever_list.html" target="mainFrame" style="color:black;">人力资源档案永久删除</a>
+                                </span>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <span>薪酬标准管理</span>
+                <ul>
+                    <li>
+                        <span>
+                            <a href="/SalaryCriterion/salarystandard_register" target="mainFrame" style="color:black;">薪酬标准登记</a>
+                        </span>
+                    </li>
+                    <li>
+                        <span>
+                            <a href="/SalaryCriterion/salarystandard_check_list" target="mainFrame" style="color:black;">薪酬标准登记复核</a>
+                        </span>
+                    </li>
+                    <li>
+                        <span>
+                            <a href="/SalaryCriterion/salarystandard_query_locate" target="mainFrame" style="color:black;">薪酬标准查询</a>
+                        </span>
+                    </li>
+                    <li>
+                        <span>
+                            <a href="/SalaryCriterion/salarystandard_change_locate" target="mainFrame" style="color:black;">薪酬标准变更</a>
+                        </span>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <span>薪酬发放管理</span>
+                <ul>
+                    <li>
+                        <span>
+                            <a href="/salaryGrant/register_locate" target="mainFrame" style="color:black;">薪酬发放登记</a>
+                        </span>
+                    </li>
+                    <li>
+                        <span>
+                            <a href="/salaryGrant/check_list" target="mainFrame" style="color:black;">薪酬发放登记复核</a>
+                        </span>
+                    </li>
+                    <li>
+                        <span>
+                            <a href="/salaryGrant/query_locate" target="mainFrame" style="color:black;">薪酬发放查询</a>
+                        </span>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <span>调动管理</span>
+                <ul>
+                    <li>
+                        <span>
+                            <a href="/Transfer/register_locate" target="mainFrame" style="color:black;">调动登记</a>
+                        </span>
+                    </li>
+                    <li>
+                        <span>
+                            <a href="/Transfer/check_list" target="mainFrame" style="color:black;">调动审核</a>
+                        </span>
+                    </li>
+                    <li>
+                        <span>
+                            <a href="/Transfer/locate" target="mainFrame" style="color:black;">调动查询</a>
+                        </span>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <span>客户化设置</span>
+                <ul>
+                    <li state="closed">
+                        <span>
+                            人力资源档案管理设置
+                        </span>
+                        <ul>
+                            <li>
+                                <span>
+                                    <a href="/Client/first_kind" target="mainFrame" style="color:black;">Ⅰ级机构设置</a>
+                                </span>
+                            </li>
+                            <li>
+                                <span>
+                                    <a href="/Client/second_kind" target="mainFrame" style="color:black;">Ⅱ级机构设置</a>
+                                </span>
+                            </li>
+                            <li>
+                                <span>
+                                    <a href="/Client/third_kind" target="mainFrame" style="color:black;">Ⅲ级机构设置</a>
+                                </span>
+                            </li>
+                            <li>
+                                <span>
+                                    <a href="/Client/profession_design" target="mainFrame" style="color:black;">职称设置</a>
+                                </span>
+                            </li>
+                            <li>
+                                <span>
+                                    <a href="/Client/major_kind" target="mainFrame" style="color:black;">职位分类设置</a>
+                                </span>
+                            </li>
+                            <li>
+                                <span>
+                                    <a href="/Client/major" target="mainFrame" style="color:black;">职位设置</a>
+                                </span>
+                            </li>
+                            <li>
+                                <span>
+                                    <a href="/Client/public_char" target="mainFrame" style="color:black;">公共属性设置</a>
+                                </span>
+                            </li>
+                        </ul>
+                    </li>
+                    <li state="closed">
+                        <span>
+                            薪酬管理设置
+                        </span>
+                        <ul>
+                            <li>
+                                <span>
+                                    <a href="/Client/salary_item" target="mainFrame" style="color:black;">薪酬项目设置</a>
+                                </span>
+                            </li>
+                            <li>
+                                <span>
+                                    <a href="/Client/salary_grant_mode" target="mainFrame" style="color:black;">薪酬发放方式设置</a>
+                                </span>
+                            </li>
+                        </ul>
+                    </li>
+                    <li state="closed">
+                        <span>
+                            其他设置
+                        </span>
+                        <ul>
+                            <li>
+                                <span>
+                                    <a href="/Client/primary_key" target="mainFrame" style="color:black;">关键字查询设置</a>
+                                </span>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <span>标准数据报表</span>
+                <ul>
+                    <li>
+                        <span>
+                            <a href="/CriterionData/excel_locate" target="mainFrame" style="color:black;">Excel标准数据报表</a>
+                        </span>
+                    </li>
+                    <li>
+                        <span>
+                            <a href="/CriterionData/pdf_locate" target="mainFrame" style="color:black;">Pdf标准数据报表</a>
+                        </span>
+                    </li>
+                    <li>
+                        <span>
+                            <a href="/CriterionData/xml_locate" target="mainFrame" style="color:black;">Xml标准数据报表</a>
+                        </span>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <span>权限管理</span>
+                <ul>
+                    <li>
+                        <span>
+                            <a href="/Power/user_list" target="mainFrame" style="color:black;">用户管理</a>
+                        </span>
+                    </li>
+                    <li>
+                        <span>
+                            <a href="/Power/right_list" target="mainFrame" style="color:black;">角色管理</a>
+                        </span>
+                    </li>
+                </ul>
+            </li>*@
+        </ul>
+    </div>
+
+    <script type="text/javascript">
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                listMain: [],
+                isz: "",
+                apath: "",
+            },
+            methods: {
+                fill: function () {
+                    axios.get('/Main/leftFind', {
+                    },
+                        {
+                        })
+                        .then(res => {
+                            //  console.log(res);
+                            this.listMain = res.data;
+                            console.log(this.listMain);
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        })
+                }
+            },
+            mounted: function () {
+                this.fill();
+            },
+
+        })
+    </script>
+
+
+</body>
+</html>

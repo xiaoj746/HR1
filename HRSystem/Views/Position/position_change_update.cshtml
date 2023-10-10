@@ -1,0 +1,181 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>position_change_update</title>
+    <link rel="stylesheet"
+          href="../../../css/table.css" type="text/css">
+    <link rel="stylesheet"
+          href="../../../css/cwcalendar.css" type="text/css">
+    <script type="text/javascript"
+            src="../../../javascript/comm/comm.js">
+    </script>
+    <script type="text/javascript"
+            src="../../../javascript/comm/list.js">
+    </script>
+    <script type="text/javascript"
+            src="../../../javascript/calendar-ch.js">
+    </script>
+    <script type="text/javascript"
+            src="../../../javascript/jquery-1.7.2.js">
+    </script>
+    <script type="text/javascript"
+            src="../../../javascript/locate.js">
+    </script>
+    <script type="text/javascript"
+            src="../../../javascript/select.js">
+    </script>
+    <script src="~/Scripts/vue/dist/vue.js"></script>
+    <script src="~/Scripts/element-ui/lib/index.js"></script>
+    <link href="~/Scripts/element-ui/lib/theme-chalk/index.css" rel="stylesheet" />
+    <script src="~/Scripts/axios/dist/axios.js"></script>
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+</head>
+<body> 
+    <div id="app">
+        <table width="100%">
+            <tr>
+                <td>
+                    <font color="black">
+                        您正在做的业务是：人力资源--招聘管理--职位发布管理--职位发布变更
+                    </font>
+                </td>
+            </tr>
+        </table>
+      
+        <el-table :data="list"
+                  border
+                  height="260"
+                  style="width: 100%; ">
+            <el-table-column prop="Major_name"
+                             label="职位名称"
+                             width="180">
+            </el-table-column>
+            <el-table-column prop="Second_kind_name"
+                             label="公司名称"
+                             width="180">
+            </el-table-column>
+            <el-table-column prop="Human_amount"
+                             label="招聘人数"
+                             width="180">
+            </el-table-column>
+            <el-table-column prop="Regist_time"
+                             label="发布时间"
+                             width="180">
+                <template slot-scope="scope">
+                    {{scope.row.Regist_time|ftime}}
+                </template>
+            </el-table-column>
+            
+                <el-table-column prop="Deadline"
+                                 label="截止时间"
+                                 width="180"
+                                 >
+                    <template slot-scope="scope">
+                        {{scope.row.Deadline|ftime}}
+                    </template>
+                </el-table-column>
+            
+            <el-table-column label="操作">
+
+                <template slot-scope="scope">
+                    <el-button size="mini" v-on:click="update(scope.row)">修改</el-button>
+                    <el-button size="mini" type="danger" v-on:click="remove(scope.row.Mre_id)">删除</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+        <el-pagination v-on:size-change="handleSizeChange"
+                       v-on:current-change="handleCurrentChange"
+                       :currentpage="currentPage"
+                       :page-sizes="[3, 6, 9, 12]"
+                       :page-size="pageSize"
+                       layout="total, sizes, prev, pager, next, jumper"
+                       :total="rows">
+        </el-pagination>
+    </div>
+    <script type="text/javascript">
+        var a;
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                list: [],
+                currentPage: 1,
+                pageSize: 3,
+                rows: 1,
+            },
+            methods: {
+                fill: function(){
+                    axios.get('/Position/position_change_updatecx', {
+                        params: {
+                            CurrentPage: this.currentPage,
+                            PageSize: this.pageSize
+                        }
+                    }).then(res => {
+                        console.log(res);
+                        this.list = res.data.List;
+                        this.rows = res.data.Rows;
+                    })
+                        .catch(err => {
+                            console.log(err);
+                        })
+                  
+                }, handleSizeChange: function (size) {
+                    this.pageSize = size;
+                    this.currentPage = 1;
+                    this.fill();
+                },
+                handleCurrentChange: function (cpage) {
+                    this.currentPage = cpage;
+                    this.fill();
+                },
+                remove(id) {
+                    console.log(id);
+                    var t = this;
+                    if (confirm("确认删除此数据吗？")) {
+                        axios.get('/Position/Engage_major_release_Delete', {
+                            params: {
+                                id: id
+                            }
+                        }).then(res => {
+                            console.log(res.data);
+                            if (res.data > 0) {
+                                this.$message({
+                                    message: "删除成功",
+                                    type: "success"
+                                });
+                                t.fill();
+                            } else {
+                                alert('删除失败！');
+                            }
+                        })
+                    }
+                },
+                update(scope) {
+                    location.href = '/Position/position_change_updatexg?id=' + scope.Mre_id + '&&name1='+ scope.First_kind_name+'&&name2='+ scope.Second_kind_name+'&&name3='+scope.Major_kind_name+''
+                }
+
+            },
+            mounted: function () {
+                this.fill();
+            },
+              
+          //时间格式
+            filters: {
+                ftime: function (value, spe) {
+                    if (value == '/Date(-62135596800000)/') {
+                        return '空'
+                    }
+                    var dt = new Date(parseInt(value.replace("/Date(", "").replace(")/", ""), 10));
+                    return dt.getFullYear() + "-" + (dt.getMonth() + 1) + "-" + dt.getDate();
+                }
+            },
+        })
+    </script>
+</body>
+</html>

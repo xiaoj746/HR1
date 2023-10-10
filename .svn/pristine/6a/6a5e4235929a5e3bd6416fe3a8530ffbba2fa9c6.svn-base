@@ -1,0 +1,58 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace HRSystem.Controllers
+{
+    public class ClientController : Controller
+    {
+        // GET: Client
+        public ActionResult first_kind()
+        {
+            return View();
+        }
+        public ActionResult second_kind()
+        {
+            return View(); 
+        }
+        public ActionResult third_kind()
+        {
+            return View(); 
+        }
+        public ActionResult profession_design()
+        {
+            return View(); 
+        }
+
+        public ActionResult major_kind()
+        {
+            return View();
+        }
+        public ActionResult major()
+        {
+            return View();
+        }
+        public ActionResult public_char()
+        {
+            return View();
+        }
+        public ActionResult salary_item()
+        {
+            return View();
+        }
+        public ActionResult salary_grant_mode()
+        {
+            return View();
+        }
+
+        public ActionResult primary_key()
+        {
+            return View();
+        }
+        
+
+
+    }
+}

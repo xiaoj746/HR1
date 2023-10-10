@@ -1,0 +1,313 @@
+﻿
+@{
+    Layout = null;
+}
+@using Model
+@{ salary_standard ss = ViewBag.y; }
+@{IEnumerable<salary_standard_details> ssd = ViewBag.s; }
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-trasitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet"
+          href="../../css/table.css" type="text/css" />
+    <title>无标题文档</title>
+    <style type="text/css">
+        #d {
+            background-color: #FFFFBB;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            filter: alpha(opacity:20);
+            opacity: 0.2;
+            position: fixed;
+            display: none;
+        }
+
+        #parent {
+            border: 1px solid #FFDB6F;
+            width: 400px;
+            height: 200px;
+            position: absolute;
+            z-index: 2;
+            top: 20%;
+            left: 25%;
+            position: fixed;
+            display: none;
+        }
+
+        #child {
+            width: 100%;
+            height: 100%;
+            color: #C66C35;
+            font-size: 15px;
+            text-align: center;
+            line-height: 25px;
+            font-weight: bold;
+        }
+
+        .button {
+            height: 30px;
+            width: 90px;
+            border-color: #D4DEE7;
+            background-color: #D4DEE7;
+            font-weight: bold;
+            font-size: 15px;
+            color: #481858;
+            cursor: pointer;
+            BORDER-BOTTOM: #D4DEE7 1px solid;
+            FILTER: progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr=#ffffff, EndColorStr=#C3DAF5);
+        }
+    </style>
+    @*<script src="~/Scripts/element-ui/lib/index.js"></script>*@
+    <link href="~/Scripts/element-ui/lib/theme-chalk/index.css" rel="stylesheet" />
+    <script src="~/Scripts/axios/dist/axios.js"></script>
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <script src="~/Scripts/vue/dist/vue.js"></script>
+    <script src="~/Scripts/element-ui/lib/index.js"></script>
+   
+    <style>
+        .TD_STYLE2 td {
+            border: 1px solid;
+        }
+    </style>
+</head>
+<script type="text/javascript"
+        src="../../javascript/jquery-1.7.2.js">
+
+
+</script>
+<SCRIPT type="text/javascript">
+    $(function () {
+        $("#button1").click(function () {
+            $("#table1").hide(800);
+            $("#table2").hide(800);
+
+            $("#d").show(1800);
+            $("#parent").fadeIn(2200);
+        });
+        $("#close").click(function () {
+            $("#d").hide(800);
+            $("#parent").hide(600);
+
+            $("#table1").show(1000);
+            $("#table2").show(1000);
+
+        });
+        $("#sure").click(function () {
+
+            $("#d").hide(800);
+            $("#parent").fadeOut(600);
+
+            $("#table1").show(1000);
+            $("#table2").show(1000);
+            $("form:first").submit();
+        });
+    });
+
+
+</SCRIPT>
+
+<body>
+    <div id="app">
+        <form action="" method="post">
+            <input type="hidden" name="standard.standardId" value="1353320112255">
+
+            <div id="d"></div>
+            <div id="parent">
+                <div id="child">
+                    <br><br>
+                    zhangsan,您确认打印此页面的信息吗？<br><br><br>
+                    <input type="button" class="button" value="确 定" id="sure"  v-on:click="btn_qd()"/>
+                    <input type="button" class="button" value="取 消" id="close" />
+                </div>
+            </div>
+
+
+            <table width="100%" id="table1">
+                <tr>
+                    <td>
+                        <font color="black">您正在做的业务是:人力资源管理--薪酬标准管理--薪酬标准登记查询</font>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div align="right">
+                            <input type="button" value="打印" id="button1"
+                                   class="BUTTON_STYLE1">
+                            <input type="button" value="返回"
+                                   onclick="javascript:windows.location='/HR_Fist/salaryCriterion/salaryCriterionAction!querysalarystandardByPage?page.startPage=1'"
+                                   class="BUTTON_STYLE1">
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <table width="100%" border="1" cellpadding=0 cellspacing=1
+                   bordercolorlight=#848284 bordercolordark=#eeeeee id="table2"
+                   class="TABLE_STYLE1">
+                <tr>
+                    <td width="12%" class="TD_STYLE1">
+                        薪酬编号
+                    </td>
+                    <td width="15%" class="TD_STYLE2" style="border:1px solid">
+               
+                        <input value=" @ss.standard_id" name="standard.standardId" readonly="readonly" class="INPUT_STYLE2">
+                    </td>
+                    <td width="12%" class="TD_STYLE1" >
+                        薪酬标准名称
+                    </td>
+                    <td width="11%" class="TD_STYLE2" style="border:1px solid">
+                        <input value=" @ss.standard_name" name="standard.standardName" id="standardName" class="INPUT_STYLE2">
+                    </td>
+                    <td width="11%" class="TD_STYLE1">
+                        薪酬总额
+                    </td>
+                    <td width="17%" class="TD_STYLE2" style="border:1px solid">
+                        <input name="standard.salarySum" id="sumSalary" class="INPUT_STYLE2" readonly="readonly" value="@ss.salary_sum">                    
+                    </td>
+                    <td class="TD_STYLE1" width="12%">
+                        &nbsp;
+                    </td>
+                    <td class="TD_STYLE2" width="10%">
+                        &nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td class="TD_STYLE1">
+                        制定人
+                    </td>
+                    <td class="TD_STYLE2" style="border:1px solid">
+                        <input value="@ss.designer">
+
+                    </td>
+                    <td class="TD_STYLE1">
+                        复核人
+                    </td>
+                    <td class="TD_STYLE2" style="border:1px solid">
+                        <input value=" @ss.checker">
+
+                       
+                    </td>
+                    <td class="TD_STYLE1">
+                        复核时间
+                    </td>
+                    <td class="TD_STYLE2" style="border:1px solid">
+                        <input value="  @ss.check_time">  
+                    </td>
+                    <td class="TD_STYLE1">
+                        &nbsp;
+                    </td>
+                    <td class="TD_STYLE2">
+                        &nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td class="TD_STYLE1">
+                        备注
+                    </td>
+                    <td colspan="7" class="TD_STYLE2" height="68" style="border:1px solid">
+                        <el-input type="textarea"
+                                  :rows="4"
+                                  class="TEXTAREA_STYLE1"
+                                  value="@ss.remark">
+                        </el-input>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="TD_STYLE1">
+                        序号
+                    </td>
+                    <td colspan="3" class="TD_STYLE1">
+                        薪酬项目名称
+                    </td>
+                    <td colspan="4" class="TD_STYLE1">
+                        金额
+                    </td>
+                </tr>
+
+                <tr class="TD_STYLE2" v-for="(item,index) in this.list">
+                    <td align="center">
+                        {{item.item_id}}
+
+                    </td>
+                    <td colspan="3">
+                        {{item.item_name}}
+
+                    </td>
+                    <td>
+                        {{item.salary}}
+                    </td>
+                    <td colspan="3">
+                        &nbsp;
+                    </td>
+                </tr>
+
+
+            </table>
+        </form>
+    </div>
+
+    <script type="text/javascript">
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                list: [],
+                SSD: {
+                    standard_id: "",
+                    standard_name: "",
+                    salary: 0,
+                    designer: "",
+                    checker: "",
+                    remark: "",
+                    salary_sum: 0,
+                    change_time: "",
+                    check_time:"",
+                }
+            },
+            methods: {
+                fill: function () {
+                      this.list =@Html.Raw(Json.Encode(ssd));
+                    @*var tt = @Html.Raw(Json.Encode(ss.check_time))
+                    this.SSD.standard_id =@Html.Raw(Json.Encode(ss.standard_id));
+                    this.SSD.standard_name =@Html.Raw(Json.Encode(ss.standard_name));
+                    this.SSD.salary_sum =@Html.Raw(Json.Encode(ss.salary_sum));
+                    this.SSD.designer =@Html.Raw(Json.Encode(ss.designer));
+                    this.SSD.checker =@Html.Raw(Json.Encode(ss.checker));
+                    this.SSD.remark =@Html.Raw(Json.Encode(ss.remark));
+
+                    if (tt == '/Date(-62135596800000)/') {
+
+                            return '空'
+                    }
+                    var dt = new Date(parseInt(tt.replace("/Date(", "").replace(")/", ""), 10));
+                    this.SSD.check_time = dt.getFullYear() + "-" + (dt.getMonth() + 1) + "-" + dt.getDate() + " " + dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();*@
+
+                },
+                btn_qd() {
+                    var table = document.getElementById("table2");
+                    var html = table.outerHTML;
+                    var url = 'data:application/vnd.ms-excel;charset=utf-8,' + encodeURIComponent(html);
+                    var downloadLink = document.createElement("a");
+                    downloadLink.href = url;
+                    downloadLink.download = "table.xls";
+                    document.body.appendChild(downloadLink);
+                    downloadLink.click();
+                    document.body.removeChild(downloadLink);
+                   // window.history.back(-1); 
+
+               }
+
+            },
+            mounted: function () {
+                this.fill();
+            },
+
+        })
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,238 @@
+﻿
+@{
+    Layout = null;
+}
+@using Model;
+@{
+    int intValue = Convert.ToInt32(ViewBag.s);
+}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-trasitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>编辑角色</title>
+    <link rel="stylesheet"
+          href="../../css/table.css" type="text/css" />
+    <script type="text/javascript" src="../../javascript/jquery-1.7.2.js"></script>
+    <script type="text/javascript" src="../../javascript/right_list_information.js"></script>
+    <script src="~/Scripts/vue/dist/vue.js"></script>
+    <script src="~/Scripts/element-ui/lib/index.js"></script>
+    <link href="~/Scripts/element-ui/lib/theme-chalk/index.css" rel="stylesheet" />
+    <script src="~/Scripts/axios/dist/axios.js"></script>
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <style type="text/css">
+        .parent {
+            margin-left: 50px;
+        }
+
+        .children {
+            margin-left: 20%;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <form id="powerAction!doModifyRight" name="powerAction!doModifyRight" action="success.html" method="post">
+            <table width="100%">
+                <tr>
+                    <td>
+                        <font color="black">您正在做的业务是：人力资源--权限管理--编辑角色</font>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">
+                        <input type="button" id="powerAction!doModifyRight_0" value="&#20445;&#23384;" class="BUTTON_STYLE1" v-on:click="btn_qd()" />
+
+                        <input type="button" value="返回" class="BUTTON_STYLE1"
+                               onclick="history.back()">
+                    </td>
+                </tr>
+            </table>
+            <table width="100%" border="1" cellpadding=3 cellspacing=1
+                   bordercolorlight=#848284 bordercolordark=#eeeeee
+                   class="TABLE_STYLE1">
+                <tr>
+                    <td class="TD_STYLE1">角色编号</td>
+                    <td class="TD_STYLE2">{{this.rolesID}}</td>
+                    <td class="TD_STYLE1">角色名称</td>
+                    <td class="TD_STYLE2">
+                        <input type="text" class="INPUT_STYLE2" v-model="rolesName" value="人事经理"
+                               name="sysRole.roleName" />
+                        <input type="hidden" name="sysRole.roleId" value="2" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="TD_STYLE1">角色说明</td>
+                    <td class="TD_STYLE2">
+                        <input type="text" class="INPUT_STYLE2" v-model="rolesInstruction" value=""
+                               name="sysRole.roleDesc" />
+                    </td>
+                    <td class="TD_STYLE1">角色是否可用</td>
+                    <td class="TD_STYLE2">
+                        <select name="sysRole.roleFlag" id="powerAction!doModifyRight_sysRole_roleFlag" v-model="rolesIF">
+                            <option value="否">否</option>
+                            <option value="是" selected="selected">是</option>
+                        </select>
+
+                    </td>
+                </tr>
+            </table>
+            <el-tree 
+                     :data="list"
+                     ref="tree1"
+                     show-checkbox
+                     node-key="id"
+                     :default-expanded-keys="[1]"
+                     :default-checked-keys="defualtkeys"
+                     :props="defaultProps">
+            </el-tree>
+
+
+        </form>
+    </div>
+
+
+
+    <script type="text/javascript">
+
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                rid: 0,
+                list: [],
+                defaultProps: {
+                    id:"id",
+                    children: 'children',
+                    label: 'Name'
+                },
+                rolesID: 0,
+                rolesName: "",
+                rolesInstruction:"",
+                rolesIF:"",
+                tres: "",
+
+                defualtkeys:[],
+            },
+
+            methods: {
+                fill: function () {
+                    this.rid = @Html.Raw(intValue);
+                    var t = this
+                    axios.get('/Power/getJuris', {
+                        params: {
+                            rid: t.rid,
+                        }
+                    }).then(res => {
+                        console.log(res.data);
+                        this.rolesID = res.data.RolesID;
+                        this.rolesName = res.data.RolesName;
+                        this.rolesInstruction = res.data.RolesInstruction;
+                        this.rolesIF = res.data.RolesIf;
+
+                    }).
+                        catch(err => {
+                            console.log(err);
+                    })
+
+                    axios.all([this.getTress(), this.getJurisByid()]).then(
+                        axios.spread(function (acct, perms) {
+                            t.list = acct.data;
+                            t.defualtkeys = perms.data;
+                        })
+                    );
+                },
+                getTress() {
+                    return axios.get('/Power/Jurisdiction_Find');
+                },
+                getJurisByid() {
+                    var t = this;
+                    return axios.get('/Power/getJurisByid', {
+                        params: {
+                            rid: t.rid,
+                        }
+                    })
+                },
+                btn_qd() {
+                    var pEids = [
+                        ...this.$refs.tree1.getCheckedKeys(),
+                        ...this.$refs.tree1.getHalfCheckedKeys(),
+                    ];
+                    var qids = pEids.join(",");
+                    axios.post('/Power/roles_update', {
+                        RolesID: this.rolesID,
+                        RolesName: this.rolesName,
+                        RolesInstruction: this.rolesInstruction,
+                        RolesIf: this.rolesIF,
+                        JuriID: qids
+                    }, {
+                    })
+                        .then(res => {
+                            console.log(res);
+                            if (res.data > 0) {
+                                alert("修改成功")    
+                                parent.location.search = '/Main/Index';
+                               // location.href = '/Power/right_list'
+
+                            } else {
+                                location.href = '/Power/right_list_information'
+
+                            }
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        })
+                   
+
+                }
+            },
+            mounted: function () {
+                this.fill();
+            },
+        })
+    </script>
+</body>
+
+
+
+<script type="text/javascript">
+    function byDefault() {
+        var arr = new Array();
+
+
+        arr[0] = 'L02';
+
+        arr[1] = 'L0201';
+
+        arr[2] = 'L0202';
+
+        arr[3] = 'L0203';
+
+        arr[4] = 'L0204';
+
+        arr[5] = 'L0205';
+
+        arr[6] = 'L020501';
+
+        arr[7] = 'L020502';
+
+        arr[8] = 'L020503';
+
+        var rightCodes = document.getElementsByName("rightCodes");
+        for (var j = 0; j < arr.length; j++) {
+            for (var k = 0; k < rightCodes.length; k++) {
+
+                if (rightCodes[k].value == arr[j]) {
+                    rightCodes[k].checked = true;
+                }
+            }
+        }
+
+    }
+
+    window.onload = byDefault;
+</script>
+
+
+
+</html>
+

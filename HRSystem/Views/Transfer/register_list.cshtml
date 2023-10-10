@@ -1,0 +1,151 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-trasitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="../../css/table.css"
+          type="text/css"></link>
+    <script src="~/Scripts/vue/dist/vue.js"></script>
+    <script src="~/Scripts/element-ui/lib/index.js"></script>
+    <link href="~/Scripts/element-ui/lib/theme-chalk/index.css" rel="stylesheet" />
+    <script src="~/Scripts/axios/dist/axios.js"></script>
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <STYLE type="text/css">
+    </STYLE>
+</head>
+<body onload="">
+    <div id="app">
+
+        <input type="hidden" value="@ViewBag.s" id="hid" />
+        <el-card class="box-card">
+            <div slot="header" class="clearfix">
+                <el-breadcrumb separator="/">
+                    <el-breadcrumb-item :to="{ path: '/' }">您在做的业务是-人力资源</el-breadcrumb-item>
+                    <el-breadcrumb-item><a href="/">调动管理</a></el-breadcrumb-item>
+                    <el-breadcrumb-item>调动登记列表</el-breadcrumb-item>
+                </el-breadcrumb>
+            </div>
+            <br>
+            <div>
+                <el-table :data="list"
+                          border
+                          style="width: 100%; ">
+                    <el-table-column prop="first_kind_name"
+                                     label="I级机构名称"
+                                     width="180">
+                    </el-table-column>
+
+                    <el-table-column prop="second_kind_name"
+                                     label="II级机构名称"
+                                     width="180">
+                        <template slot-scope="scope">
+                            <span v-if="scope.row.second_kind_name==null">空</span>
+                            <span v-if="scope.row.second_kind_name!=null">{{scope.row.second_kind_name}}</span>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column prop="third_kind_name"
+                                     label="III级机构名称"
+                                     width="180">
+                        <template slot-scope="scope">
+                            <span v-if="scope.row.third_kind_name==null">空</span>
+                            <span v-if="scope.row.third_kind_name!=null">{{scope.row.third_kind_name}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="salary_standard_name"
+                                     label="薪酬标准"
+                                     width="180">
+                    </el-table-column>
+                    <el-table-column prop="human_name"
+                                     label="名字"
+                                     width="180">
+                    </el-table-column>
+                    <el-table-column label="操作">
+                        <template slot-scope="scope">
+                            <el-button size="mini" v-on:click="update(scope.row.human_id)">调动</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </div>
+        </el-card>
+
+
+        <el-pagination v-on:size-change="handleSizeChange"
+                       v-on:current-change="handleCurrentChange"
+                       :currentpage="currentPage"
+                       :page-sizes="[3, 6, 9, 12]"
+                       :page-size="pageSize"
+                       layout="total, sizes, prev, pager, next, jumper"
+                       :total="rows">
+        </el-pagination>
+
+
+    </div>
+    <script type="text/javascript">
+        var str = document.getElementById("hid").value;
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                list: [],
+                str:"",
+                currentPage: 1,
+                pageSize: 3,
+                rows: 0,
+            },
+            methods: {
+                fill: function () {
+                    axios.get('/Transfer/HFFindFenye', {
+                        params: {
+                            CurrentPage: this.currentPage,
+                            PageSize: this.pageSize,
+                            str: str
+
+                        }
+                    },
+                        {
+                        })
+                        .then(res => {
+                            console.log(res);
+                            this.list = res.data.List;
+                            this.rows = res.data.Rows;
+
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        })
+                },
+                handleSizeChange: function (size) {
+                    this.pageSize = size;
+                    this.currentPage = 1;
+                    this.fill();
+                },
+                handleCurrentChange: function (cpage) {
+                    this.currentPage = cpage;
+                    this.fill();
+                },
+                update(id) {
+                    location.href = "/Transfer/register_success?hid=" + id;
+                }
+            },
+            mounted: function () {
+                this.fill();
+            },
+            // 时间格式
+            filters: {
+                ftime: function (value, spe) {
+                    if (value == '/Date(-62135596800000)/') {
+                        return '空'
+                    }
+                    var dt = new Date(parseInt(value.replace("/Date(", "").replace(")/", ""), 10));
+                    return dt.getFullYear() + "年" + (dt.getMonth() + 1) + "月" + dt.getDate() + " 日";
+                }
+            },
+        })
+    </script>
+
+</body>
+</html>

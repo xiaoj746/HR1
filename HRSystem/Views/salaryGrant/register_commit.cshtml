@@ -1,0 +1,747 @@
+﻿
+@{
+    Layout = null;
+}
+@using Model
+@{IEnumerable<human_file_XJ> list = ViewBag.s; }
+@{ Users_XJ user = ViewBag.us; }
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-trasitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="../../css/table.css" type="text/css" />
+    <title>无标题文档</title>
+    <script src="~/Scripts/vue/dist/vue.js"></script>
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+    <script src="~/Scripts/vue/dist/vue.js"></script>
+    <script src="~/Scripts/element-ui/lib/index.js"></script>
+    <link href="~/Scripts/element-ui/lib/theme-chalk/index.css" rel="stylesheet" />
+    <script src="~/Scripts/axios/dist/axios.js"></script>
+    <script src="~/javascript/echarts.min.js"></script>
+
+    <style type="text/css">
+        <!--
+        .style3 {
+            color: #0000CC
+        }
+
+        td {
+            text-align: center
+        }
+
+        #sum {
+            width: 130px;
+            height: 30px;
+        }
+
+        .el-table__row input {
+            BACKGROUND-COLOR: white;
+        }
+
+        #trs tr {
+            height: 31px;
+            border: 1px solid
+        }
+
+        #box_ab .el-dialog {
+            width: 60% !important
+        }
+
+        #salarySum_sum {
+            color: red;
+        }
+
+        #box_ab2 .el-dialog {
+            width: 30% !important
+        }
+
+        #Reward_amount_table tr td {
+            padding: 10px;
+        }
+
+        #saleSum_box tr td {
+            padding: 10px;
+        }
+
+        #deductSum_box tr td {
+            padding: 10px;
+        }
+    </style>
+
+
+</head>
+<body>
+    <div id="app">
+        <el-card class="box-card">
+            <div slot="header" class="clearfix">
+                <el-breadcrumb separator="/">
+                    <el-breadcrumb-item :to="{ path: '/' }">您正在做的业务是：人力资源</el-breadcrumb-item>
+                    <el-breadcrumb-item><a href="/">薪酬标准管理</a></el-breadcrumb-item>
+                    <el-breadcrumb-item>薪酬发放登记</el-breadcrumb-item>
+                </el-breadcrumb>
+                <table width="100%">
+                    <tr>
+                        <td colspan="2" style="text-align: right;">
+                            <input type="button" value="提交" class="BUTTON_STYLE1" v-on:click="btn_qd()">
+                            <input type="button" value="返回" onclick="javascript:window.history.back();" class="BUTTON_STYLE1">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="text-align: left">
+                            薪酬单编号：<i style="color:red">{{this.salary_grant_id}}</i>
+                            <input type="hidden" name="salaryGrant.salaryGrantId" v-model="this.salary_grant_id">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="text-align: left">
+                            机构：
+                            <i style="color:red">{{this.KindName}}</i>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        @*@ViewBag.u.u_name*@
+                        <td style="text-align: left">
+                            本机构总人数:<i style="color:red">{{this.list.length}}</i>
+                            <input type="hidden" name="salaryGrant.humanAmount" value="5">
+                            ，基本薪酬总数:<i style="color:red">{{  this.demandSalarySum}}</i>
+                            <input type="hidden" name="salaryGrant.salaryStandardSum" value="" v-model="this.demandSalarySum" />
+                            ，实发总额:<span id="salarySum_sum">{{  this.salary_paid_sum_}}</span>
+                            <input type="hidden" id="salaryPaidSum" name="salaryGrant.salaryPaidSum" :value=" this.salary_paid_sum_" />
+
+                        </td>
+                        <td style="text-align: right;">
+                            登记人:<input type="text" name="salaryGrant.register" v-model="this.register" size="8" readonly="readonly">
+                            登记时间：<span id="Tdate"></span>
+                            <input type="hidden" name="salaryGrant.registTime" id="Tdate2">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div>
+                <el-table :data="list"
+                          border
+                          height="260"
+                          style="width: 100%; ">
+                    <el-table-column label="序号"
+                                     width="50">
+                        <template slot-scope="scope">
+                            {{scope.$index+1}}
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="human_id"
+                                     label="档案编号"
+                                     width="180">
+                    </el-table-column>
+                    <el-table-column prop="human_name"
+                                     label="姓名"
+                                     width="120">
+                    </el-table-column>
+                    <el-table-column prop="third_kind_name"
+                                     label="薪酬基本明细"
+                                     width="140">
+                        <template slot-scope="scope">
+                            <a href="javascript:void(0)" v-on:click="cont_show(scope.row.salary_standard_id)" style="color:dodgerblue">详细内容</a>
+                        </template>
+
+                    </el-table-column>
+                    <el-table-column label="奖励金额"
+                                     width="180">
+                        <template slot-scope="scope">
+                            <input type="text" :name="'grantDetails['+(scope.$index)+'].bounsSum'" :id="'bounsSum'+(scope.$index+1)" v-on:keyup="onKeyPress(scope.$index+1)" class="INPUT_STYLE2" value="0.00" v-on:click="Reward_amount_click(scope.$index+1)" />
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="销售绩效总额"
+                                     width="180">
+                        <template slot-scope="scope">
+                            <input type="text" :name="'grantDetails['+(scope.$index)+'].saleSum'" :id="'saleSum'+(scope.$index+1)" v-on:keyup="onKeyPress(scope.$index+1)" class="INPUT_STYLE2" value="0.00" v-on:click="saleSum_click(scope.$index+1)" />
+
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="应扣金额"
+                                     width="180">
+                        <template slot-scope="scope">
+                            <input type="text" :name="'grantDetails['+(scope.$index)+'].deductSum'" :id="'deductSum'+(scope.$index+1)" v-on:keyup="onKeyPress(scope.$index+1)" class="INPUT_STYLE2" value="0.00" v-on:click="deductSum_click(scope.$index+1)" />
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="实发金额"
+                                     width="180">
+                        <template slot-scope="scope">
+                            <input type="hidden" :id="'salaryStandardSum'+(scope.$index+1)" :name="'grantDetails['+(scope.$index)+'].salaryStandardSum'" :value=scope.row.salary_sum />
+                            <input type="text" :name="'grantDetails['+(scope.$index)+'].salaryPaidSum'" :id="'salaryPaidSum'+(scope.$index+1)" readonly="readonly" class="INPUT_STYLE2" :value=scope.row.salary_sum />
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </div>
+        </el-card>
+        <el-dialog :visible.sync="dialogVisible"
+                   width="30%"
+                   :before-close="handleClose"
+                   id="box_ab">
+
+            <div ref="chart" style="width: 600px;height:400px;"></div>
+            <span slot="footer" class="dialog-footer">
+                <el-button v-on:click="dialogVisible = false">取 消</el-button>
+                <el-button type="primary" v-on:click="dialogVisible = false">确 定</el-button>
+            </span>
+        </el-dialog>
+        @*奖励金额*@
+        <el-dialog :visible.sync="dialogVisibleMoney"
+                   width="30%"
+                   :before-close="handleClose"
+                   id="box_ab2">
+            <div ref="chart" style="" id="Reward_amount_table">
+                <h2>奖励金额</h2>
+                <table border="1" style="margin: 30px auto; width: 270px;">
+                    <tr>
+                        <td></td>
+                        <td>名称</td>
+                        <td>金额</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" id="checkClss1" /></td>
+                        <td>全勤</td>
+                        <td>￥<i id="amount1">50</i></td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" id="checkClss2" /></td>
+                        <td>任务完成度高</td>
+                        <td>￥<i id="amount2">80</i></td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" id="checkClss3" /></td>
+                        <td>执行力快</td>
+                        <td>￥<i id="amount3">30</i></td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" id="checkClss4" /></td>
+                        <td>重大表现</td>
+                        <td>￥<i id="amount4">100</i></td>
+                    </tr>
+                </table>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button v-on:click="dialogVisibleMoney = false">取 消</el-button>
+                <el-button type="primary" v-on:click="dialogVisibleMoney_click()">确 定</el-button>
+            </span>
+        </el-dialog>
+        @*销售绩效总额*@
+        <el-dialog :visible.sync="dialogVisibleMoney1"
+                   width="30%"
+                   :before-close="handleClose"
+                   id="box_ab2">
+            <div ref="chart" style="" id="saleSum_box">
+                <h2>销售绩效总额</h2>
+                <table border="1" style="margin: 30px auto; width: 270px;">
+                    <tr>
+                        <td></td>
+                        <td>名称</td>
+                        <td>金额</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" id="saleSumClss1" /></td>
+                        <td>业绩突出</td>
+                        <td>￥<i id="saleSums1">80</i></td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" id="saleSumClss2" /></td>
+                        <td>业务能力强</td>
+                        <td>￥<i id="saleSums2">80</i></td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" id="saleSumClss3" /></td>
+                        <td>销售额好</td>
+                        <td>￥<i id="saleSums3">100</i></td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" id="saleSumClss4" /></td>
+                        <td>工作态度</td>
+                        <td>￥<i id="saleSums4">50</i></td>
+                    </tr>
+                </table>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button v-on:click="dialogVisibleMoney1 = false">取 消</el-button>
+                <el-button type="primary" v-on:click="dialogVisibleMoney_click1()">确 定</el-button>
+            </span>
+        </el-dialog>
+        @*应扣金额*@
+        <el-dialog :visible.sync="dialogVisibleMoney2"
+                   width="30%"
+                   :before-close="handleClose"
+                   id="box_ab2">
+            <div ref="chart" style="" id="deductSum_box">
+                <h2>应扣金额</h2>
+                <table border="1" style="margin: 30px auto; width: 270px;">
+                    <tr>
+                        <td></td>
+                        <td>名称</td>
+                        <td>金额</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" id="deductSumClss1" /></td>
+                        <td>缺勤次数较低</td>
+                        <td>￥<i id="deductSums1">20</i></td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" id="deductSumClss2" /></td>
+                        <td>缺勤次数较高</td>
+                        <td>￥<i id="deductSums2">80</i></td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" id="deductSumClss3" /></td>
+                        <td>工作态度差</td>
+                        <td>￥<i id="deductSums3">80</i></td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" id="deductSumClss4" /></td>
+                        <td>任务完成度低</td>
+                        <td>￥<i id="deductSums4">60</i></td>
+                    </tr>
+                </table>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button v-on:click="dialogVisibleMoney2 = false">取 消</el-button>
+                <el-button type="primary" v-on:click="dialogVisibleMoney_click2()">确 定</el-button>
+            </span>
+        </el-dialog>
+    </div>
+    <script type="text/javascript">
+        var count = 0;
+        var numi = 0;
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                list: [],
+                dialogVisible: false,
+                dialogVisibleMoney: false,
+                dialogVisibleMoney1: false,
+                dialogVisibleMoney2: false,
+                Reward_amount:0,
+                names: [],
+                salarys: [],
+                salary_grant_id: "",
+                demandSalarySum: 0, //基本薪酬总数
+                KindName:"",
+                items: [
+                    {
+                        names: "",
+                        salarys:"",
+                    }
+                ],
+                BounsSum: "",
+                SaleSum: "",
+                DeductSum: "",
+                SalaryStandardSum: "",
+                SalaryPaidSum: "",
+                first_kind_id: '',
+                first_kind_name: '',
+                second_kind_id: '',
+                second_kind_name: '',
+                third_kind_id: '',
+                third_kind_name: '',
+                salary_paid_sum_: "",
+                register: "",
+            },
+            methods: {
+                fill: function () {
+                    this.register=@Html.Raw(Json.Encode(user.u_name));
+                    this.list =@Html.Raw(Json.Encode(list));
+                    //生成随机编号
+                    var num = Math.floor((Math.random() * 9999) + 1000).toString();
+                    var date = new Date();
+                    //年
+                    var year = date.getFullYear().toString();
+                    //月
+                    var month = (date.getMonth() + 1).toString();
+                    //日
+                    var strDate = date.getDate().toString();
+                    //时
+                    var hour = date.getHours().toString();
+                    //分
+                    var minute = date.getMinutes().toString();
+                    //秒
+                    var second = date.getSeconds().toString();
+                    //随机编号
+                    var nums = "HS" + year + month + strDate + hour + minute + second + num
+                    this.salary_grant_id = nums;
+                    for (var i = 0; i < this.list.length; i++) {
+                        this.demandSalarySum += this.list[i].salary_sum;
+                        this.first_kind_id = this.list[i].first_kind_id;
+                        this.first_kind_name = this.list[i].first_kind_name;
+                        this.second_kind_id = this.list[i].second_kind_id;
+                        this.second_kind_name = this.list[i].second_kind_name;
+                        this.third_kind_id = this.list[i].third_kind_id;
+                        this.third_kind_name = this.list[i].third_kind_name;
+                        if (this.list[i].second_kind_id == null) {
+                            this.KindName = "I级架构";
+                        } else if (this.list[i].second_kind_id != null && this.list[i].third_kind_id == null) {
+                            this.KindName = "II级架构";
+                        } else if (this.list[i].third_kind_id != null) {
+                            this.KindName = "III级架构";
+                        }
+                    }
+                    this.salary_paid_sum_ = this.demandSalarySum;
+                    console.log(this.list);
+
+                },
+                onKeyPress(i) {
+                    var size = this.list.length;
+                    var bounsSum = document.getElementById("bounsSum" + i);
+                    var saleSum = document.getElementById("saleSum" + i);
+                    var deductSum = document.getElementById("deductSum" + i);
+                    var salaryPaidSum = document.getElementById("salaryPaidSum" + i);
+                    if (isNaN(bounsSum.value) || bounsSum.value < 0) {
+                        alert("金额填写错误!");
+                        bounsSum.value = "0.00";
+                        return;
+                    }
+                    if (isNaN(saleSum.value) || saleSum.value < 0) {
+                        alert("金额填写错误!");
+                        saleSum.value = "0.00";
+                        return;
+                    }
+                    if (isNaN(deductSum.value) || deductSum.value < 0) {
+                        alert("金额填写错误!");
+                        deductSum.value = "0.00";
+                        return;
+                    }
+
+                    salaryPaidSum.value = Number(bounsSum.value) + Number(saleSum.value) - Number(deductSum.value)+ Number(document.getElementById("salaryStandardSum" + i).value);
+
+                    var sum = 0;
+                    for (var j = 1; j <= size; j++) {
+                        sum = Number(sum) + Number(document.getElementById("salaryPaidSum" + j).value);
+                    }
+                    document.getElementById("salarySum_sum").innerHTML = sum;
+                   // document.getElementById("salaryPaidSum"+i).value = sum;
+                },
+                cont_show(id) {
+
+                    axios.get('/salaryGrant/SSDFindByid', {
+                        params: {
+                            sid: id,
+                        }
+                    })
+                        .then(res => {
+                            this.SSDList = res.data;
+                            console.log(this.SSDList);
+                            for (var i = 0; i < this.SSDList.length; i++) {
+                                this.names[i] = this.SSDList[i].item_name
+                                this.salarys[i] = this.SSDList[i].salary
+                            }
+                            const myChart = echarts.init(this.$refs.chart); // 实例化echarts对象
+                            var option = {
+                                title: {
+                                    text: '查看薪酬基本明细'
+                                },
+                                xAxis: {
+                                    type: 'category',
+                                    data: this.names
+                                },
+                                yAxis: {
+                                    type: 'value'
+                                },
+                                series: [{
+                                    data: this.salarys,
+                                    type: 'bar'
+                                }]
+                            };
+                            myChart.setOption(option);
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        })
+
+
+                    //for (var i = 0; i < this.list.length; i++) {
+                    //    if (this.list[i].human_id == hid) {
+                    //        this.names[0] = this.list[i].item_name.split(',');
+                    //        this.salarys[0] = this.list[i].salary.split(',');
+                    //    }
+                    //}
+                    this.dialogVisible = true;
+                },
+                handleClose(done) {
+                     done();
+                },
+                btn_qd() {
+                    let human_id = "";
+                    let human_Name = "";
+                    let BounsSum = "";
+                    let SaleSum = "";
+                    let DeductSum= "";
+                    let SalaryStandardSum= "";
+                    let SalaryPaidSum= "";
+                    for (var i = 0; i < this.list.length; i++) {
+                        if ((i + 1) == this.list.length) {
+                            human_id += this.list[i].human_id;
+                            human_Name += this.list[i].human_name;
+                            BounsSum += document.getElementById("bounsSum" + (i + 1)).value;
+                            SaleSum += document.getElementById("saleSum" + (i + 1)).value;
+                            DeductSum += document.getElementById("deductSum" + (i + 1)).value;
+                            SalaryStandardSum += this.list[i].salary_sum;
+                            SalaryPaidSum += document.getElementById("salaryPaidSum" + (i + 1)).value;
+                        } else {
+                            human_id += this.list[i].human_id+",";
+                            human_Name += this.list[i].human_name + ",";
+                            BounsSum += document.getElementById("bounsSum" + (i + 1)).value + ",";
+                            SaleSum += document.getElementById("saleSum" + (i + 1)).value + ",";
+                            DeductSum += document.getElementById("deductSum" + (i + 1)).value + ",";
+                            SalaryStandardSum += this.list[i].salary_sum + ",";
+                            SalaryPaidSum += document.getElementById("salaryPaidSum" + (i + 1)).value+",";
+                        }
+                    }
+                    // console.log(human_id + "/" + human_Name + "/" + BounsSum + "/" + SaleSum + "/" + DeductSum + "/" + SalaryStandardSum + "/" + SalaryPaidSum);
+                    let salarySum_sum=  Number(document.getElementById("salarySum_sum").innerHTML)
+                    axios.post('/salaryGrant/SG_Add', {
+                        count:this.list.length,
+                        salary_grant_id: this.salary_grant_id,
+                        human_id: human_id,
+                        human_name: human_Name,
+                        bouns_sum: BounsSum,
+                        sale_sum: SaleSum,
+                        deduct_sum: DeductSum,
+                        salary_standard_sum_sgd: SalaryStandardSum,
+                        salary_paid_sum_sgd: SalaryPaidSum,
+                        first_kind_id: this.first_kind_id,
+                        first_kind_name: this.first_kind_name,
+                        second_kind_id: this.second_kind_id,
+                        second_kind_name: this.second_kind_name,
+                        third_kind_id: this.third_kind_id,
+                        third_kind_name: this.third_kind_name,
+                        salary_standard_sum: this.demandSalarySum,
+                        salary_paid_sum: salarySum_sum,
+                        register: this.register,
+                        human_amount:this.list.length
+                    }, {
+                    })
+                        .then(res => {
+                            console.log(res);
+                            if (res.data > 0) {
+                                alert("登记成功")
+                                location.href = '/salaryGrant/check_list'
+
+                            } else {
+                                location.href = '/salaryGrant/register_commit'
+
+                            }
+
+                            //res.data.forEach(function (item, index, array) {
+                            //    cityOptions[index] = item.pbc_id;
+                            //})
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        })
+                },
+                Reward_amount_click(i) {
+                    numi = i;
+                    this.dialogVisibleMoney = true;
+                    if (i>1) {
+                      //  var div = document.getElementById("Reward_amount_table");
+                      //  var inputs = div.getElementsByTagName("input");
+                        for (var i = 1; i <= 4; i++) {
+                            var checkbox = document.getElementById("checkClss" + i);
+                            checkbox.checked = false;
+                        }
+                    }
+                },
+                dialogVisibleMoney_click() {
+                    var div = document.getElementById("Reward_amount_table");
+                    var inputs = div.getElementsByTagName("input");
+                    let bounsSum = 0;
+                    for (var i = 1; i <= inputs.length; i++) {
+                        var checkbox = document.getElementById("checkClss" + i );
+                        if (checkbox.checked) {
+                            bounsSum += parseInt(document.getElementById("amount" +i ).innerText)
+                        }
+                    }
+                    var sum = 0;
+                    for (var i = 0; i < this.list.length; i++) {
+                        if (numi==(i+1)) {
+                            document.getElementById("bounsSum" + (i + 1)).value = bounsSum
+                            var salaryPaidSum = document.getElementById("salaryPaidSum" + (i + 1));
+                            salaryPaidSum.value = Number(document.getElementById("bounsSum" + (i + 1)).value) + Number(document.getElementById("saleSum" + (i + 1)).value) - Number(document.getElementById("deductSum" + (i + 1)).value) + Number(document.getElementById("salaryStandardSum" + (i + 1)).value)
+                            sum = Number(sum) + Number(document.getElementById("salaryPaidSum" + (i + 1)).value);
+                        }         
+                    }
+                    document.getElementById("salarySum_sum").innerHTML = sum;
+                    this.dialogVisibleMoney = false;
+                },
+                saleSum_click(s) {
+                    numi = s
+                    this.dialogVisibleMoney1 = true;
+                    if (s > 1) {
+                     //   var div = document.getElementById("saleSum_box");
+                     //   var inputs = div.getElementsByTagName("input");
+                        for (var i = 1; i <= 4; i++) {
+                            var checkbox = document.getElementById("saleSumClss" + i);
+                            checkbox.checked = false;
+                        }
+                    }
+                },
+                dialogVisibleMoney_click1() {
+                    var div = document.getElementById("saleSum_box");
+                    var inputs = div.getElementsByTagName("input");
+                    let bounsSum = 0;
+                    for (var i = 0; i < inputs.length; i++) {
+                        var checkbox = document.getElementById("saleSumClss" + (i + 1));
+                        if (checkbox.checked) {
+                            bounsSum += parseInt(document.getElementById("saleSums" + (i + 1)).innerText)
+                        }
+                    }
+                    var sum = 0;
+                    for (var i = 0; i < this.list.length; i++) {
+                        if (numi==(i+1)) {
+                            document.getElementById("saleSum" + (i + 1)).value = bounsSum
+                            var salaryPaidSum = document.getElementById("salaryPaidSum" + (i + 1));
+                            salaryPaidSum.value = Number(document.getElementById("bounsSum" + (i + 1)).value) + Number(document.getElementById("saleSum" + (i + 1)).value) - Number(document.getElementById("deductSum" + (i + 1)).value) + Number(document.getElementById("salaryStandardSum" + (i + 1)).value)
+                            sum = Number(sum) + Number(document.getElementById("salaryPaidSum" + (i + 1)).value);
+                        }
+                   
+                    }
+                    document.getElementById("salarySum_sum").innerHTML = sum;
+                    this.dialogVisibleMoney1 = false;
+                },
+                deductSum_click(u) {
+                    console.log(i + "应扣金额");
+                    numi=u
+                    if (u > 1) {
+                       // var div = document.getElementById("deductSum_box");
+                       // var inputs = div.getElementsByTagName("input");                   
+                        for (var i = 1; i <= 4; i++) {
+                            var checkbox = document.getElementById("deductSumClss" + i);
+                            checkbox.checked = false;
+                        }
+                    }
+                    this.dialogVisibleMoney2 = true;
+
+                },
+                dialogVisibleMoney_click2() {
+                    var div = document.getElementById("deductSum_box");
+                    var inputs = div.getElementsByTagName("input");
+                    let bounsSum = 0;
+                    for (var i = 0; i < inputs.length; i++) {
+                        var checkbox = document.getElementById("deductSumClss" + (i + 1));
+                        if (checkbox.checked) {
+                            bounsSum += parseInt(document.getElementById("deductSums" + (i + 1)).innerText)
+                        }
+                    }
+                    var sum = 0;
+                    for (var i = 0; i < this.list.length; i++) {
+                        if (numi==(i+1)) {
+                            document.getElementById("deductSum" + (i + 1)).value = bounsSum
+                            var salaryPaidSum = document.getElementById("salaryPaidSum" + (i + 1));
+                            salaryPaidSum.value = Number(document.getElementById("bounsSum" + (i + 1)).value) + Number(document.getElementById("saleSum" + (i + 1)).value) - Number(document.getElementById("deductSum" + (i + 1)).value) + Number(document.getElementById("salaryStandardSum" + (i + 1)).value)
+                            sum = Number(sum) + Number(document.getElementById("salaryPaidSum" + (i + 1)).value);
+                        }
+
+                    }
+                    document.getElementById("salarySum_sum").innerHTML = sum;
+                    this.dialogVisibleMoney2 = false;
+                }
+            },
+            mounted: function () {
+                this.fill();
+            },
+            //时间格式
+            //filters: {
+            //    ftime: function (value, spe) {
+            //        if (value == '/Date(-62135596800000)/') {
+            //            return '空'
+            //        }
+            //        var dt = new Date(parseInt(value.replace("/Date(", "").replace(")/", ""), 10));
+            //        return dt.getFullYear() + "-" + (dt.getMonth() + 1) + "-" + dt.getDate();
+            //    }
+            //},
+        })
+    </script>
+    <SCRIPT type="text/javascript">
+
+        function onKeyPress(i) {
+            var bounsSum = document.getElementById("bounsSum" + i);
+            var size = 5;
+            var bounsSum = document.getElementById("bounsSum" + i);
+            var saleSum = document.getElementById("saleSum" + i);
+            var deductSum = document.getElementById("deductSum" + i);
+            var salaryPaidSum = document.getElementById("salaryPaidSum" + i);
+            if (isNaN(bounsSum.value) || bounsSum.value < 0) {
+                alert("金额填写错误!");
+                bounsSum.value = "0.00";
+                return;
+            }
+            if (isNaN(saleSum.value) || saleSum.value < 0) {
+                alert("金额填写错误!");
+                saleSum.value = "0.00";
+                return;
+            }
+            if (isNaN(deductSum.value) || deductSum.value < 0) {
+                alert("金额填写错误!");
+                deductSum.value = "0.00";
+                return;
+            }
+            salaryPaidSum.value = Number(bounsSum.value) + Number(saleSum.value) - Number(deductSum.value) + Number(document.getElementById("salaryStandardSum" + i).value);
+
+            var sum = 0;
+            for (var j = 1; j <= size; j++) {
+                sum = Number(sum) + Number(document.getElementById("salaryPaidSum" + j).value);
+            }
+            document.getElementById("salarySum_sum").innerHTML = sum;
+            document.getElementById("salaryPaidSum").value = sum;
+
+        }
+
+
+
+        function time() {
+            var tdate = document.getElementById("Tdate");
+            var d = new Date();
+            var y = d.getFullYear();
+            var moth = d.getMonth() + 1;
+            var date = d.getDate();
+            var h = d.getHours();
+            var m = d.getMinutes();
+            var s = d.getSeconds();
+            var hh = 20 - 1 - h;
+            var mm = 60 - 1 - m;
+            var ss = 60 - s;
+            if (hh > 0) {
+                mm = mm + 60 * hh;
+            }
+            if (moth < 10) {
+                moth = "0" + moth;
+            }
+            if (date < 10) {
+                date = "0" + date;
+            }
+            if (h < 10) {
+                h = "0" + h;
+            }
+            if (m < 10) {
+                m = "0" + m;
+            }
+            if (s < 10) {
+                s = "0" + s;
+            }
+            if (mm < 10) {
+                mm = "0" + mm;
+            }
+            if (ss < 10) {
+                ss = "0" + ss;
+            }
+
+            tdate.innerHTML = y + "-" + moth + "-" + date + " " + h + ":" + m + ":" + s;
+            document.getElementById("Tdate2").value = tdate.innerHTML;
+        }
+        window.onload = time;
+        var out = window.setInterval(time, 1000);
+    </SCRIPT>
+
+</body>
+</html>
+
+

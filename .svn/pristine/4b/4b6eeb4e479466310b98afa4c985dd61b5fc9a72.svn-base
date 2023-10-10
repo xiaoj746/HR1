@@ -1,0 +1,63 @@
+﻿using Dapper;
+using Model;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DAO
+{
+    public class Config_public_charDAO
+    {
+        string conStr = "Data Source=.;Initial Catalog=HR_DB;Integrated Security=True";
+        //查询
+        public async Task<FenYe<Config_public_char>> Config_public_charSelectAsync(FenYe<Config_public_char> fenYe)
+        {
+            using (SqlConnection connection = new SqlConnection(conStr))
+            {
+                DynamicParameters dynamicParameters = new DynamicParameters();
+                dynamicParameters.Add("@pageSize", fenYe.PageSize);
+                dynamicParameters.Add("@keyName", "pbc_id");
+                dynamicParameters.Add("@tableName", "Config_public_char");
+                dynamicParameters.Add("@currentPage", fenYe.CurrentPage);
+                dynamicParameters.Add("@rows", direction: ParameterDirection.Output, dbType: DbType.Int32);
+                string sql = "exec [dbo].[proc_FenYe] @pageSize, @keyName, @tableName, @currentPage, @rows out";
+                fenYe.List = await connection.QueryAsync<Config_public_char>(sql, dynamicParameters);
+                fenYe.Rows = dynamicParameters.Get<int>("rows");
+                return fenYe;
+            }
+        }
+        //添加
+        public async Task<int> Config_public_charInsertAsync(Config_public_char c)
+        {
+            using (SqlConnection connection = new SqlConnection(conStr))
+            {
+                string sql = $"insert into Config_public_char(attribute_kind,attribute_name)values('{c.Attribute_kind}','{c.Attribute_name}')";
+                return await connection.ExecuteAsync(sql);
+            }
+        }
+        //删除
+        public async Task<int> Config_public_charDeleteAsync(int id)
+        {
+            using (SqlConnection connection = new SqlConnection(conStr))
+            {
+                string sql = $"delete from Config_public_char where pbc_id={id}";
+                return await connection.ExecuteAsync(sql);
+            }
+        }
+        //职称查询
+        public async Task<IEnumerable<Config_public_char>> Config_public_charZCSelectAsync()
+        {
+            using (SqlConnection connection = new SqlConnection(conStr))
+            {
+                string sql = "select * from Config_public_char where [attribute_kind]='职称'";
+                return await connection.QueryAsync<Config_public_char>(sql);
+            }
+        }
+
+        
+    }
+}

@@ -1,0 +1,269 @@
+﻿
+@{
+    Layout = null;
+}
+@using Model
+@model Users_XJ
+<!DOCTYPE html public "-//w3c//dtd html 4.01 transitional//en"
+          "http://www.w3.org/tr/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <style type=text/css>
+        body {
+            background-image: url(/images/images/icon/Login2.jpg);
+            background-size: cover;
+            background-repeat: no-repeat;
+            /*  background-position: center;*/
+            font-size: 12px;
+            color: #ffffff;
+            font-family: 宋体
+        }
+
+        td {
+            font-size: 12px;
+            color: #ffffff;
+            font-family: 宋体
+        }
+
+        .s {
+            color: red;
+        }
+
+        #box {
+            position: relative;
+            top: 0px;
+            left: 0px;
+            width: 440px;
+            height: 600px;
+            background-color: #fff;
+            margin: 0px auto;
+            margin-top: 63px;
+            border-radius: 16px;
+        }
+
+        .img {
+            border-width: 0px;
+            position: absolute;
+            left: 170px;
+            top: 23px;
+            width: 88px;
+            height: 88px;
+        }
+
+        .wenzi {
+            border-width: 0px;
+            position: absolute;
+            margin-left: 181px;
+            margin-top: 112px;
+            color: black;
+            width: 76px;
+            white-space: nowrap;
+        }
+
+        .wenzi1 {
+            border-width: 0px;
+            position: absolute;
+            margin-left: 108px;
+            margin-top: 158px;
+            width: 71px;
+            white-space: nowrap;
+        }
+
+        .input {
+            border-width: 0px;
+            position: absolute;
+            margin-left: 44px;
+            margin-top: 219px;
+            width: 71px;
+            white-space: nowrap;
+        }
+
+        .input1 {
+            border-width: 0px;
+            position: absolute;
+            margin-left: 44px;
+            margin-top: 286px;
+            width: 71px;
+            white-space: nowrap;
+        }
+
+        input::placeholder {
+            color: rgb(204, 204, 204);
+        }
+
+        input[type=text] {
+            padding-left: 40px;
+        }
+
+        input[type=password] {
+            padding-left: 40px;
+        }
+
+        .sub {
+            border-width: 0px;
+            position: absolute;
+            margin-left: 44px;
+            margin-top: 386px;
+            width: 71px;
+            white-space: nowrap;
+        }
+
+        input:focus {
+            outline-color: #206deb;
+        }
+        #userName {
+            width: 310px;
+            height: 35px;
+            border-radius: 7px;
+        }
+        #userPassword {
+            width: 310px;
+            height: 35px;
+            border-radius: 7px;
+        }
+    </style>
+
+
+    <script type="text/javascript"
+            src="/javascript/jquery-1.7.2.js">
+    </script>
+    <script type="text/javascript"
+            src="/javascript/jquery.messager.js">
+    </script>
+    <script type="text/javascript"
+            src="/javascript/login.js">
+    </script>
+
+
+
+</head>
+<body>
+    @using (Html.BeginForm("Users_Login", "Login", FormMethod.Post))
+    {
+        <div id="box">
+            <div>
+                <img src="~/images/images/icon/loginlogo.png" class="img" />
+            </div>
+            <div class="wenzi">
+                <span style="font-family: 'PingFangSC-Medium', 'PingFang SC Medium', 'PingFang SC'; font-weight: 500; font-style: normal; font-size: 30px;">登  录</span>
+            </div>
+            <div class="wenzi1">
+                <span style="font-family: 'PingFangSC-Regular', 'PingFang SC'; font-weight: 400; font-style: normal; font-size: 16px; color: #999999;">欢迎登录人力资源后台管理系统</span>
+            </div>
+            <div class="input">
+                @Html.TextBoxFor(e => e.u_name, new { @id = "userName", @Value = "admin" , @placeholder= "请输入用户名" })
+                @Html.ValidationMessageFor(e => e.u_name, "", new { @class = "s" })
+                @*<input type="text" id="user" style="width: 310px; height: 35px; border-radius: 7px;" placeholder="请输入用户名" />*@
+            </div>
+            <div class="input1">
+                @Html.TextBoxFor(e => e.u_password, new { @id = "userPassword", @type = "password", @Value = "123456" , @placeholder = "请输入密码" })
+                @Html.ValidationMessageFor(e => e.u_password, "", new { @class = "s" })
+                @*<input type="password" id="pwd" style="width: 310px; height: 35px; border-radius: 7px;" placeholder="请输入密码" />*@
+            </div>
+            <div class="sub">
+                <input type="submit"  value="登 录" style="width: 355px; height: 38px; background-color: rgba(37, 97, 239, 1); border: none; border-radius: 8px; -moz-box-shadow: 0px 5px 30px rgba(41, 132, 248, 0.298039215686275); -webkit-box-shadow: 0px 5px 30px rgba(41, 132, 248, 0.298039215686275); box-shadow: 0px 5px 30px rgba(41, 132, 248, 0.298039215686275); font-family: 'SourceHanSansSC-Normal', '思源黑体 Regular', '思源黑体'; font-weight: 400; font-style: normal; font-size: 16px; color: #FFFFFF;"  />
+            </div>
+            <div>
+                <img src="~/images/images/icon/用户 (1).png" id="user_img" style="width: 20px; height: 20px; position: relative; left: 55px; top: 228px;" />
+            </div>
+            <div>
+                <img src="~/images/images/icon/u1080.png" id="pwd_img" style="width: 18px; height: 20px; position: relative; left: 56px; top: 275px;" />
+            </div>
+
+        </div>
+        <!--<div>
+            <table cellspacing=0 cellpadding=0 width=900 align=center border=0>
+                <tbody>
+                    <tr>
+                        <td style="height: 105px">
+                            <img src="/images/login_11.gif" border=0>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td background=/images/login_22.jpg height=300>
+                            <table height=300 cellpadding=0 width=900 border=0>
+                                <tbody>
+                                    <tr>
+                                        <td colspan=2 height=35></td>
+                                    </tr>
+                                    <tr>
+                                        <td width=360></td>
+                                        <td>
+                                            <table cellspacing=0 cellpadding=2 border=0>
+                                                <tbody>
+                                                    <tr>
+                                                        <td style="height: 28px" width=80>
+                                                            登 录 名：
+                                                        </td>
+                                                        <td style="height: 28px" width=150>-->
+        @*<input id="userName" style="width: 130px" />*@
+        <!--
+
+            </td>
+        </tr>
+        <tr>
+            <td style="height: 28px">
+                登录密码：
+            </td>
+            <td style="height: 28px">
+               -->
+
+        @*<input id="userPassword" style="width: 130px" type="password" />*@
+        <!--</td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <td style="height: 18px"></td>
+                                                        <td style="height: 18px"></td>
+                                                        <td style="height: 18px"></td>
+                                                    </tr>
+                                                    <tr>
+
+                                                        <td>
+                                                            <input type="submit" value="登录" style="cursor: pointer;" />
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <img src="/images/login_33.jpg" border=0>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>-->
+    }
+            <script>
+                const myInput = document.getElementById("userName");
+                const myPwd = document.getElementById("userPassword");
+                myInput.onfocus = function () {
+                    //console.log(1);
+                    document.getElementById("user_img").src = "/images/images/icon/用户 (3).png";
+                  
+                };
+                myInput.onblur = function () {
+                    document.getElementById("user_img").src = "/images/images/icon/用户 (1).png";
+                   
+                };
+                myPwd.onfocus = function () {
+                    //console.log(1);
+                   
+                    document.getElementById("pwd_img").src = "/images/images/icon/u1080_selected.png";
+                };
+                myPwd.onblur = function () {
+
+                    document.getElementById("pwd_img").src = "/images/images/icon/u1080.png";
+                };
+            </script>
+
+</body>
+</html>
+

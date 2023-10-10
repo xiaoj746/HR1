@@ -1,0 +1,132 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-trasitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet"
+          href="../../css/table.css" type="text/css">
+    <script type="text/javascript"
+            src="../../javascript/comm/comm.js">
+    </script>
+
+    <script type="text/javascript" src="../../javascript/jquery-1.7.2.js"></script>
+    <script src="~/Scripts/vue/dist/vue.js"></script>
+    <script src="~/Scripts/element-ui/lib/index.js"></script>
+    <link href="~/Scripts/element-ui/lib/theme-chalk/index.css" rel="stylesheet" />
+    <script src="~/Scripts/axios/dist/axios.js"></script>
+
+</head>
+<body>
+    <div id="app">
+        <table width="100%">
+            <tr>
+                <td>
+                    <font color="black">
+                        您正在做的业务是：人力资源--客户化设置--人力资源档案管理设置--公共属性设置
+                    </font>
+                </td>
+            </tr>
+            <tr>
+                <td align="right">
+                    <input type="button" value="添加" class="BUTTON_STYLE1"
+                           onclick="window.location.href='/Client/CharAdd';">
+                </td>
+            </tr>
+        </table>
+        <div>
+
+            <el-table :data="table"
+                      style="width: 100%">
+                <el-table-column prop="Attribute_kind"
+                                 label="属性种类">
+                </el-table-column>
+                <el-table-column prop="Attribute_name"
+                                 label="职位分类名称">
+                </el-table-column>
+
+                <el-table-column label="操作">
+                    <template slot-scope="scope">
+                        <el-button size="mini" type="danger" v-on:click="remove(scope.row.Pbc_id)">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+                <el-pagination v-on:size-change="handleSizeChange"
+                               v-on:current-change="handleCurrentChange"
+                               :currentpage="currentPage"
+                               :page-sizes="[3, 6, 9, 12]"
+                               :page-size="pageSize"
+                               layout="total, sizes, prev, pager, next, jumper"
+                               :total="rows">
+                </el-pagination>
+           
+        </div>
+
+    </div>
+    <script type="text/javascript">
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                table: [],
+                currentPage: 1,
+                pageSize: 3,
+                rows: 1
+            },
+            methods: {
+                fill: function () {
+                    axios.get('/Client/charcx',
+                        {
+                            params: {
+                                CurrentPage: this.currentPage,
+                                PageSize: this.pageSize
+                            }
+                        })
+                        .then(res => {
+                            console.log(res.data);
+                            this.table = res.data.List;
+                            this.rows = res.data.Rows;
+                        })
+                }, handleSizeChange: function (size) {
+                    this.pageSize = size;
+                    this.currentPage = 1;
+                    this.fill();
+                },
+                handleCurrentChange: function (cpage) {
+                    this.currentPage = cpage;
+                    this.fill();
+                },
+                remove(id) {
+                    console.log(id);
+                    var t = this;
+                    if (confirm("确认删除此数据吗？")) {
+                        axios.get('/Client/CharDelete', {
+                            params: {
+                                id: id
+                            }
+                        }).then(res => {
+                            console.log(res.data);
+                            if (res.data > 0) {
+                                this.$message({
+                                    message: "删除成功",
+                                    type: "success"
+                                });
+                                t.fill();
+                            } else {
+                                alert('删除失败！');
+                            }
+                        })
+                    }
+                }
+            },
+            mounted: function () {
+                this.fill();
+            }
+
+        })
+    </script>
+</body>
+</html>
+
